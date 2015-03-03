@@ -22,7 +22,8 @@ namespace Message
 
     std::unique_ptr<BotWarz::StrategyInterface> createStrategy()
     {
-        return std::make_unique<BotWarz::AlwaysAccelerateStrategy>();
+        //return std::make_unique<BotWarz::AlwaysAccelerateStrategy>();
+        return std::make_unique<BotWarz::AttackTheClosestBot>();
     }
 
     std::string MoveBots(

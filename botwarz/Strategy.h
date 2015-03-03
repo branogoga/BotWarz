@@ -162,4 +162,21 @@ namespace BotWarz {
             const std::shared_ptr<Player> pOtherPlayer
             );
     };
+
+    class AttackTheClosestBot : public StrategyInterface
+    {
+    public:
+        AttackTheClosestBot()
+        {
+        };
+
+        virtual ~AttackTheClosestBot()
+        {
+        };
+
+        virtual std::vector<std::shared_ptr<GameCommandBase>>    getCommands(
+            const std::shared_ptr<Player> pMyPlayer,
+            const std::shared_ptr<Player> pOtherPlayer
+            );
+    };
 }

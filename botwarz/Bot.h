@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Point.h"
+
 #include <iostream>
 
 namespace BotWarz {
@@ -12,11 +14,11 @@ namespace BotWarz {
 
         unsigned    getId() const;
 
-        double      getPositionX() const;
-        void        setPositionX(double i_dPositionX);
+        Geometry::Point getPosition() const;
+        void    setPosition(const Geometry::Point& i_Point);
 
+        double      getPositionX() const;
         double      getPositionY() const;
-        void        setPositionY(double i_dPositionY);
 
         double      getAngle() const;
         void        setAngle(double i_dAngle);
@@ -27,8 +29,7 @@ namespace BotWarz {
 
     private:
         unsigned    m_nId;
-        double      m_dPositionX;
-        double      m_dPositionY;
+        Geometry::Point m_Position;
         double      m_dAngle;
         double      m_dSpeed;
     };

@@ -66,8 +66,12 @@ namespace {
         const char* jsonKeyBotSpeed = "speed";
 
         BotWarz::Bot bot(jsonBot[jsonKeyBotId].asUInt());
-        bot.setPositionX(jsonBot[jsonKeyBotPositionX].asDouble());
-        bot.setPositionY(jsonBot[jsonKeyBotPositionY].asDouble());
+        bot.setPosition(
+            Geometry::Point(
+                jsonBot[jsonKeyBotPositionX].asDouble(),
+                jsonBot[jsonKeyBotPositionY].asDouble()
+                )
+            );
         bot.setAngle(jsonBot[jsonKeyBotAngle].asDouble());
         bot.setSpeed(jsonBot[jsonKeyBotSpeed].asDouble());
 

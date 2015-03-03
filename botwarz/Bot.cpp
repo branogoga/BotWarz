@@ -16,24 +16,24 @@ unsigned    Bot::getId() const
     return m_nId;
 }
 
-void        Bot::setPositionX(double i_dPositionX)
+Geometry::Point Bot::getPosition() const
 {
-    m_dPositionX = i_dPositionX;
+    return m_Position;
+}
+
+void    Bot::setPosition(const Geometry::Point& i_Position)
+{
+    m_Position = i_Position;
 }
 
 double      Bot::getPositionX() const
 {
-    return m_dPositionX;
-}
-
-void        Bot::setPositionY(double i_dPositionY)
-{
-    m_dPositionY = i_dPositionY;
+    return m_Position.x();
 }
 
 double      Bot::getPositionY() const
 {
-    return m_dPositionY;
+    return m_Position.y();
 }
 
 void        Bot::setAngle(double i_dAngle)
@@ -59,8 +59,7 @@ double      Bot::getSpeed() const
 std::ostream& operator << (std::ostream& out, const BotWarz::Bot& bot)
 {
     out << " id = " << bot.getId()
-        << ", x = " << bot.getPositionX()
-        << ", y = " << bot.getPositionY()
+        << ", position = " << bot.getPosition()
         << ", angle = " << bot.getAngle()
         << ", speed = " << bot.getSpeed() 
         << std::endl;

@@ -76,6 +76,7 @@
     <ClCompile Include="jsoncpp\src\lib_json\json_writer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="sha1\sha1.cpp" />
     <ClCompile Include="SpeedLevel.cpp" />
     <ClCompile Include="Strategy.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="GameFactory.h" />
     <ClInclude Include="Messages.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="sha1\sha1.h" />
     <ClInclude Include="SpeedLevel.h" />
     <ClInclude Include="Strategy.h" />
