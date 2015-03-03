@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="jsoncpp\src\lib_json\json_reader.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\src\lib_json\json_value.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\src\lib_json\json_writer.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="sha1\sha1.cpp">
+      <Filter>sha1</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="SpeedLevel.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Bot.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameFactory.cpp" />
+    <ClCompile Include="Strategy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TCPClient.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="sha1\sha1.h">
+      <Filter>sha1</Filter>
+    </ClInclude>
+    <ClInclude Include="Consts.h" />
+    <ClInclude Include="Messages.h" />
+    <ClInclude Include="World.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="SpeedLevel.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Bot.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameFactory.h" />
+    <ClInclude Include="Strategy.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="jsoncpp">
+      <UniqueIdentifier>{26f928c4-5994-4156-b4f5-657c468abb22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sha1">
+      <UniqueIdentifier>{f63d0e0f-0f3b-42e4-b6be-3b659cdcd58f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Strategy">
+      <UniqueIdentifier>{06a8c713-3368-472e-a298-9e754b503b92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
