@@ -23,22 +23,22 @@ namespace BotWarz
 
     }//anonymous namespace
 
-std::ostream& operator<<(std::ostream& out, const GameCommandBase& command)
-{
-    return command.toStream(out);
-}
+    //std::ostream& operator<<(std::ostream& out, const Command::Interface& command)
+    //{
+    //    return command.toStream(out);
+    //}
 
-std::vector<std::shared_ptr<GameCommandBase>>    AlwaysAccelerateStrategy::getCommands(
-    const std::shared_ptr<Player> pMyPlayer,
-    const std::shared_ptr<Player> pOtherPlayer
-    )
+std::vector<std::shared_ptr<Command::Interface>>    AlwaysAccelerateStrategy::getCommands(
+const std::shared_ptr<Player> pMyPlayer,
+const std::shared_ptr<Player> pOtherPlayer
+)
 {
-    std::vector<std::shared_ptr<GameCommandBase>>    vCommands;
+    std::vector<std::shared_ptr<Command::Interface>>    vCommands;
 
     for each(auto bot in pMyPlayer->getBots())
     {
         vCommands.push_back(
-            std::make_shared<GameCommandAccelerate>(bot->getId())
+            std::make_shared<Command::Accelerate>(bot->getId())
             );
     }
 
@@ -70,12 +70,12 @@ double calculateMaxAttackAngleInDegrees( const double i_dBotRadius, const double
     return Geometry::convertAngleFromRadiansToDegrees(atan2(x, y));
 }
 
-std::vector<std::shared_ptr<GameCommandBase>>    AttackTheClosestBot::getCommands(
+std::vector<std::shared_ptr<Command::Interface>>    AttackTheClosestBot::getCommands(
     const std::shared_ptr<Player> pMyPlayer,
     const std::shared_ptr<Player> pOtherPlayer
     )
 {
-    std::vector<std::shared_ptr<GameCommandBase>>    vCommands;
+    std::vector<std::shared_ptr<Command::Interface>>    vCommands;
 
     const std::vector<std::shared_ptr<Bot>>& vMyBots = pMyPlayer->getBots();
     for each(auto myBot in vMyBots)
@@ -141,13 +141,13 @@ std::vector<std::shared_ptr<GameCommandBase>>    AttackTheClosestBot::getCommand
             if (m_pWorld->isInside(futurePosition.x(), futurePosition.y(), m_dBotRadius))
             {
                 vCommands.push_back(
-                    std::make_shared<GameCommandAccelerate>(myBot->getId())
+                    std::make_shared<Command::Accelerate>(myBot->getId())
                     );
             }
             else
             {
                 vCommands.push_back(
-                    std::make_shared<GameCommandSteer>(
+                    std::make_shared<Command::Steer>(
                         myBot->getId(), 
                         getMaxAngle( 
                             m_vSpeedLevels, 
@@ -169,7 +169,7 @@ std::vector<std::shared_ptr<GameCommandBase>>    AttackTheClosestBot::getCommand
             {
                 std::cout << "Steer! (" << dChangeInAngleInDegrees << " degrees )" << std::endl;
                 vCommands.push_back(
-                    std::make_shared<GameCommandSteer>(myBot->getId(), dChangeInAngleInDegrees)
+                    std::make_shared<Command::Steer>(myBot->getId(), dChangeInAngleInDegrees)
                     );
                 continue;
             }
@@ -177,7 +177,7 @@ std::vector<std::shared_ptr<GameCommandBase>>    AttackTheClosestBot::getCommand
             {
                 std::cout << " Accelerate!" << std::endl;
                 vCommands.push_back(
-                    std::make_shared<GameCommandAccelerate>(myBot->getId())
+                    std::make_shared<Command::Accelerate>(myBot->getId())
                     );
                 continue;
             }
@@ -193,14 +193,14 @@ std::vector<std::shared_ptr<GameCommandBase>>    AttackTheClosestBot::getCommand
         {
             std::cout << " Break! " << std::endl;
             vCommands.push_back(
-                std::make_shared<GameCommandBrake>(myBot->getId())
+                std::make_shared<Command::Brake>(myBot->getId())
                 );
             continue;
         }
 
         std::cout << "Steer! (" << dChangeInAngleInDegrees << " degrees )" << std::endl;
         vCommands.push_back(
-            std::make_shared<GameCommandSteer>(myBot->getId(), dChangeInAngleInDegrees)
+            std::make_shared<Command::Steer>(myBot->getId(), dChangeInAngleInDegrees)
             );
 
         //// 3. Avoid collisions with own Bots

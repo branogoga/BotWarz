@@ -85,12 +85,18 @@
   <ItemGroup>
     <ClInclude Include="BotWarz\Application.h" />
     <ClInclude Include="BotWarz\Bot.h" />
+    <ClInclude Include="BotWarz\Command\Accelerate.h" />
+    <ClInclude Include="BotWarz\Command\Base.h" />
+    <ClInclude Include="BotWarz\Command\Brake.h" />
+    <ClInclude Include="BotWarz\Command\Interface.h" />
+    <ClInclude Include="BotWarz\Command\Steer.h" />
     <ClInclude Include="BotWarz\Game.h" />
     <ClInclude Include="BotWarz\GameFactory.h" />
     <ClInclude Include="BotWarz\Message\Messages.h" />
     <ClInclude Include="BotWarz\Player.h" />
     <ClInclude Include="BotWarz\SpeedLevel.h" />
     <ClInclude Include="BotWarz\Strategy.h" />
+    <ClInclude Include="BotWarz\Strategy\Interface.h" />
     <ClInclude Include="BotWarz\World.h" />
     <ClInclude Include="dll.h" />
     <ClInclude Include="Geometry\Point.h" />
@@ -104,6 +110,7 @@
     <ClCompile Include="BotWarzDll.cpp" />
     <ClCompile Include="BotWarz\Application.cpp" />
     <ClCompile Include="BotWarz\Bot.cpp" />
+    <ClCompile Include="BotWarz\Command\Interface.cpp" />
     <ClCompile Include="BotWarz\Game.cpp" />
     <ClCompile Include="BotWarz\GameFactory.cpp" />
     <ClCompile Include="BotWarz\Player.cpp" />
