@@ -22,9 +22,6 @@
     <ClInclude Include="BotWarz\SpeedLevel.h">
       <Filter>BotWarz</Filter>
     </ClInclude>
-    <ClInclude Include="BotWarz\Strategy.h">
-      <Filter>BotWarz</Filter>
-    </ClInclude>
     <ClInclude Include="BotWarz\World.h">
       <Filter>BotWarz</Filter>
     </ClInclude>
@@ -55,6 +52,12 @@
     <ClInclude Include="BotWarz\Command\Steer.h">
       <Filter>BotWarz\Command</Filter>
     </ClInclude>
+    <ClInclude Include="BotWarz\Strategy\AttackClosestBot.h">
+      <Filter>BotWarz\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Strategy\Strategy.h">
+      <Filter>BotWarz\Strategy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BotWarzDll.cpp" />
@@ -73,9 +76,6 @@
       <Filter>BotWarz</Filter>
     </ClCompile>
     <ClCompile Include="BotWarz\SpeedLevel.cpp">
-      <Filter>BotWarz</Filter>
-    </ClCompile>
-    <ClCompile Include="BotWarz\Strategy.cpp">
       <Filter>BotWarz</Filter>
     </ClCompile>
     <ClCompile Include="BotWarz\World.cpp">
@@ -98,6 +98,12 @@
     </ClCompile>
     <ClCompile Include="BotWarz\Command\Interface.cpp">
       <Filter>BotWarz\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Strategy\AttackClosestBot.cpp">
+      <Filter>BotWarz\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Strategy\Strategy.cpp">
+      <Filter>BotWarz\Strategy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

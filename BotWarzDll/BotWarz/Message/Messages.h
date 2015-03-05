@@ -3,7 +3,9 @@
 #include "BotWarz/Bot.h"
 #include "BotWarz/Game.h"
 #include "BotWarz/Player.h"
-#include "BotWarz/Strategy.h"
+#include "BotWarz/Command/Interface.h"
+#include "BotWarz/Strategy/Interface.h"
+#include "BotWarz/Strategy/AttackClosestBot.h"
 #include "jsoncpp/include/json/json.h"
 
 #include <string>
@@ -11,11 +13,9 @@
 
 namespace Message
 {
-    std::unique_ptr<BotWarz::StrategyInterface> createStrategy( const std::shared_ptr<BotWarz::Game> i_pGame )
+    std::unique_ptr<BotWarz::Strategy::Interface> createStrategy( const std::shared_ptr<BotWarz::Game> i_pGame )
     {
-        //return std::make_unique<BotWarz::AlwaysAccelerateStrategy>();
-
-        return std::make_unique<BotWarz::AttackTheClosestBot>(
+        return std::make_unique<BotWarz::Strategy::AttackClosestBot>(
             i_pGame->getSpeedLevels(),
             i_pGame->getBotRadius(),
             i_pGame->getWorld()

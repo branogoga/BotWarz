@@ -95,8 +95,9 @@
     <ClInclude Include="BotWarz\Message\Messages.h" />
     <ClInclude Include="BotWarz\Player.h" />
     <ClInclude Include="BotWarz\SpeedLevel.h" />
-    <ClInclude Include="BotWarz\Strategy.h" />
+    <ClInclude Include="BotWarz\Strategy\AttackClosestBot.h" />
     <ClInclude Include="BotWarz\Strategy\Interface.h" />
+    <ClInclude Include="BotWarz\Strategy\Strategy.h" />
     <ClInclude Include="BotWarz\World.h" />
     <ClInclude Include="dll.h" />
     <ClInclude Include="Geometry\Point.h" />
@@ -115,7 +116,8 @@
     <ClCompile Include="BotWarz\GameFactory.cpp" />
     <ClCompile Include="BotWarz\Player.cpp" />
     <ClCompile Include="BotWarz\SpeedLevel.cpp" />
-    <ClCompile Include="BotWarz\Strategy.cpp" />
+    <ClCompile Include="BotWarz\Strategy\AttackClosestBot.cpp" />
+    <ClCompile Include="BotWarz\Strategy\Strategy.cpp" />
     <ClCompile Include="BotWarz\World.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
