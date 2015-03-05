@@ -194,12 +194,6 @@ namespace BotWarz {
             );
 
     private:
-        double  getMaxAngle(double i_dSpeed, const double i_dDefaultAngle = 45.0 ) const;
-        bool    isMinimalSpeed(double i_dSpeed) const;
-        double  getMinimalSpeed() const;
-
-        bool    isMaximalSpeed(double i_dSpeed) const;
-
         const std::vector<SpeedLevel>&  m_vSpeedLevels;
         const double m_dBotRadius;
         const std::shared_ptr<World> m_pWorld;

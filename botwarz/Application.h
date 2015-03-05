@@ -11,8 +11,6 @@
 #include "Timer.h"
 #include "Utils.h"
 
-#include "Testable.h"
-
 #include <string>
 #include <memory>
 #include <assert.h>
@@ -29,83 +27,6 @@ public:
     Application()
         : m_client(SERVER_NAME, SERVER_PORT)
     {
-        Test();
-    }
-
-    void Test()
-    {
-        //    {
-        //        BotWarz::Bot bot(1);
-        //        bot.setPosition(Geometry::Point(100.0, 100.0));
-        //        bot.setAngleInDegrees(0.0);
-        //        bot.setSpeed(10);
-
-        //        Geometry::Point positionInSecond = bot.getFuturePosition(1000.0);
-
-        //        const double dPrecision = 1E-01;
-        //        assert((positionInSecond.x() - 110.0) < dPrecision);
-        //        assert((positionInSecond.y() - 100.0) < dPrecision);
-        //    }
-
-        //    {
-        //        BotWarz::Bot bot(1);
-        //        bot.setPosition(Geometry::Point(100.0, 100.0));
-        //        bot.setAngleInDegrees(0.0);
-        //        bot.setSpeed(10);
-
-        //        Geometry::Point positionInSecond = bot.getFuturePosition(250.0);
-
-        //        const double dPrecision = 1E-01;
-        //        assert((positionInSecond.x() - 102.5) < dPrecision);
-        //        assert((positionInSecond.y() - 100.0) < dPrecision);
-        //    }
-
-        //    {
-        //        BotWarz::Bot bot(1);
-        //        bot.setPosition(Geometry::Point(100.0, 100.0));
-        //        bot.setAngleInDegrees(0.0);
-        //        bot.setSpeed(20);
-
-        //        Geometry::Point positionInSecond = bot.getFuturePosition(1000.0);
-
-        //        const double dPrecision = 1E-01;
-        //        assert((positionInSecond.x() - 120.0) < dPrecision);
-        //        assert((positionInSecond.y() - 100.0) < dPrecision);
-        //    }
-
-        //    {
-        //        BotWarz::Bot bot(1);
-        //        bot.setPosition(Geometry::Point(100.0, 100.0));
-        //        bot.setAngleInDegrees(90.0);
-        //        bot.setSpeed(10);
-
-        //        Geometry::Point positionInSecond = bot.getFuturePosition(1000.0);
-
-        //        const double dPrecision = 1E-01;
-        //        assert((positionInSecond.x() - 100.0) < dPrecision);
-        //        assert((positionInSecond.y() - 110.0) < dPrecision);
-        //    }
-
-        //    {
-        //        BotWarz::Bot bot(1);
-        //        bot.setPosition(Geometry::Point(100.0, 100.0));
-        //        bot.setAngleInDegrees(-45.0);
-        //        bot.setSpeed(10);
-
-        //        Geometry::Point positionInSecond = bot.getFuturePosition(1000.0);
-
-        //        const double dPrecision = 1E-01;
-        //        assert((positionInSecond.x() - 107.0) < dPrecision);
-        //        assert((positionInSecond.y() - 93.0) < dPrecision);
-        //    }
-
-    //    {
-    //        BotWarz::SpeedLevel speedLevel1(10.0, 20.0);
-    //        BotWarz::SpeedLevel speedLevel2(20.0, 10.0);
-
-    //        assert( speedLevel1 < speedLevel2 );
-    //        //assert( speedLevel2 > speedLevel1 );
-    //    }
     }
 
 	void Execute(const char *token, const char *player_name)

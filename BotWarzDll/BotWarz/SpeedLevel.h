@@ -1,12 +1,13 @@
 #pragma once
 
-
+#include "dll.h"
 
 #include <iostream>
+#include <vector>
 
 namespace BotWarz {
 
-    class SpeedLevel
+    class TESTABLE SpeedLevel
     {
     public:
         SpeedLevel(double i_dSpeed = 0.0, double i_dMaxAngle = 0.0);
@@ -21,6 +22,26 @@ namespace BotWarz {
         double    m_dSpeed;
         double    m_dMaxAngle;
     };
+
+    TESTABLE double  getMaxAngle(
+        const std::vector<SpeedLevel>& vSpeedLevels,
+        double i_dSpeed, 
+        const double i_dDefaultAngle = 30.0
+        );
+
+    TESTABLE bool    isMinimalSpeed(
+        const std::vector<SpeedLevel>& vSpeedLevels,
+        double i_dSpeed
+        );
+
+    TESTABLE double  getMinimalSpeed(
+        const std::vector<SpeedLevel>& vSpeedLevels
+        );
+
+    TESTABLE bool    isMaximalSpeed(
+        const std::vector<SpeedLevel>& vSpeedLevels,
+        double i_dSpeed
+        );
 
 }//namespace BotWarz
 

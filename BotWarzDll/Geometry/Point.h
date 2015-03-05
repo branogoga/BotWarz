@@ -8,7 +8,7 @@
 
 namespace Geometry {
 
-    class DLL_API Point
+    class TESTABLE Point
     {
     public:
         Point(double i_X = 0.0, double i_Y = 0.0)
@@ -35,20 +35,20 @@ namespace Geometry {
         double m_Y;
     };
 
-    DLL_API double  distanceSquare(const Point& point1, const Point& point2);
-    DLL_API double  distance(const Point& point1, const Point& point2);
-    DLL_API size_t  closestPointIndex(const std::vector<Point>& i_vPoints, const Point& i_point);
-    DLL_API double  angleInRadians(const Point& point1, const Point& point2);
-    DLL_API double  angleInDegrees(const Point& point1, const Point& point2);
-    DLL_API double  convertAngleFromRadiansToDegrees(double i_dAngleInRadians);
-    DLL_API double  convertAngleFromDegreesToRadians(double i_dAngleInDegrees);
-    DLL_API bool    doLinesIntersect(
+    TESTABLE double  distanceSquare(const Point& point1, const Point& point2);
+    TESTABLE double  distance(const Point& point1, const Point& point2);
+    TESTABLE size_t  closestPointIndex(const std::vector<Point>& i_vPoints, const Point& i_point);
+    TESTABLE double  angleInRadians(const Point& point1, const Point& point2);
+    TESTABLE double  angleInDegrees(const Point& point1, const Point& point2);
+    TESTABLE double  convertAngleFromRadiansToDegrees(double i_dAngleInRadians);
+    TESTABLE double  convertAngleFromDegreesToRadians(double i_dAngleInDegrees);
+    TESTABLE bool    doLinesIntersect(
         const Point& startLine1, const Point& endLine1,
         const Point& startLine2, const Point& endLine2
         );
 
 }//namespace Geometry
 
-DLL_API std::ostream& operator << (std::ostream& out, const Geometry::Point& point);
+std::ostream& operator << (std::ostream& out, const Geometry::Point& point);
 
 

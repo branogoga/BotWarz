@@ -6,12 +6,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Test.cpp" />
-    <ClCompile Include="PointTest.cpp" />
+    <ClCompile Include="Geometry\PointTest.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\SpeedLevelTest.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\BotTest.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geometry">
       <UniqueIdentifier>{78d5479f-1bb8-4883-9c43-5ad33fc5367d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BotWarz">
+      <UniqueIdentifier>{8acfd5b5-72ed-4c84-b798-2c5af4060d9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

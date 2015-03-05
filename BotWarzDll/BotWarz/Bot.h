@@ -7,7 +7,7 @@
 
 namespace BotWarz {
 
-    class  Bot
+    class  TESTABLE Bot
     {
     public:
         Bot( unsigned i_nId );
@@ -40,6 +40,6 @@ namespace BotWarz {
 
 }
 
-DLL_API std::ostream& operator << (std::ostream& out, const BotWarz::Bot& bot);
+std::ostream& operator << (std::ostream& out, const BotWarz::Bot& bot);
 
 
