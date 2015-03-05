@@ -4,8 +4,15 @@
 
 using namespace BotWarz;
 
-Bot::Bot( unsigned i_nId ) :
-    m_nId( i_nId )
+Bot::Bot( unsigned i_nId,
+    const Geometry::Point& i_Position,
+    double i_dAngleInDegrees,
+    double i_dSpeed
+    ):
+    m_nId(i_nId),
+    m_Position(i_Position),
+    m_dAngleInDegrees(i_dAngleInDegrees),
+    m_dSpeed(i_dSpeed)
 {
 }
 

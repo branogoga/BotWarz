@@ -10,7 +10,13 @@ namespace BotWarz {
     class  TESTABLE Bot
     {
     public:
-        Bot( unsigned i_nId );
+        Bot( 
+            unsigned i_nId,
+            const Geometry::Point& i_Position = Geometry::Point(0.0, 0.0),
+            double i_dAngleInDegrees = 0.0,
+            double i_dSpeed = 0.0
+            );
+
         virtual ~Bot();
 
         unsigned    getId() const;

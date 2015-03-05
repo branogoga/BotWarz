@@ -15,6 +15,9 @@
     <ClCompile Include="BotWarz\BotTest.cpp">
       <Filter>BotWarz</Filter>
     </ClCompile>
+    <ClCompile Include="BotWarz\Strategy\StrategyTest.cpp">
+      <Filter>BotWarz\Strategy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geometry">
@@ -22,6 +25,9 @@
     </Filter>
     <Filter Include="BotWarz">
       <UniqueIdentifier>{8acfd5b5-72ed-4c84-b798-2c5af4060d9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BotWarz\Strategy">
+      <UniqueIdentifier>{db7dda3d-149f-4949-8e22-e993e4110e4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
