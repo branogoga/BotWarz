@@ -1,6 +1,9 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+
+#include "Utils.h"
+
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -93,7 +96,7 @@ public:
 	{
 		char recvbuf[2048];
 
-        while (true)
+        WHILE_TRUE
         {
             size_t pos = m_buffer.find_first_of('\n');
             if (pos != std::string::npos)

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Testable.h" />
+    <ClInclude Include="dll.h" />
+    <ClInclude Include="BotWarz\Bot.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Game.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\GameFactory.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Player.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\SpeedLevel.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Strategy.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\World.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Point.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Application.h">
+      <Filter>BotWarz</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Message\Messages.h">
+      <Filter>BotWarz\Message</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BotWarzDll.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Testable.cpp" />
+    <ClCompile Include="BotWarz\Bot.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Game.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\GameFactory.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Player.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\SpeedLevel.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Strategy.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\World.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Point.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_reader.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_value.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_writer.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Application.cpp">
+      <Filter>BotWarz</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="BotWarz">
+      <UniqueIdentifier>{c71b9d7e-16c2-4903-ad0d-ca1180ebb5a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{01e77f12-386a-4d5c-b026-1e9041b6bf9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jsoncpp">
+      <UniqueIdentifier>{e83b034b-e9fc-4d49-bff7-1ce361e31f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BotWarz\Message">
+      <UniqueIdentifier>{522edd82-b661-43c1-89dd-1c8c977c0f40}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1240C9D9-1559-4E7C-BDC2-D9712D96FEE9}</ProjectGuid>
     <RootNamespace>botwarz</RootNamespace>
+    <ProjectName>BotWarz</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -44,8 +45,9 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\jsoncpp\include;$(SolutionDir)vendor;$(SolutionDir)BotWarzDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -53,12 +55,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\jsoncpp\include;$(SolutionDir)vendor;$(SolutionDir)BotWarzDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -67,36 +71,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bot.cpp" />
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_reader.cpp" />
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_value.cpp" />
+    <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_writer.cpp" />
     <ClCompile Include="Config.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameFactory.cpp" />
-    <ClCompile Include="jsoncpp\src\lib_json\json_reader.cpp" />
-    <ClCompile Include="jsoncpp\src\lib_json\json_value.cpp" />
-    <ClCompile Include="jsoncpp\src\lib_json\json_writer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Point.cpp" />
     <ClCompile Include="sha1\sha1.cpp" />
-    <ClCompile Include="SpeedLevel.cpp" />
-    <ClCompile Include="Strategy.cpp" />
-    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Bot.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Consts.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameFactory.h" />
     <ClInclude Include="Messages.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Point.h" />
     <ClInclude Include="sha1\sha1.h" />
-    <ClInclude Include="SpeedLevel.h" />
-    <ClInclude Include="Strategy.h" />
     <ClInclude Include="TCPClient.h" />
-    <ClInclude Include="World.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BotWarzDll\BotWarzDll.vcxproj">
+      <Project>{70353e11-7b1d-4554-a5a2-8e03aa285aa7}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
