@@ -23,7 +23,7 @@ namespace BotWarz {
     class  GameFactory : public boost::noncopyable
     {
     public:
-        GameFactory(const std::string& i_szNickName);
+        GameFactory(const std::string i_szNickName);
         virtual ~GameFactory();
 
         std::shared_ptr<Game>   createFromJson(const Json::Value& jsonGame);
@@ -38,7 +38,7 @@ namespace BotWarz {
         std::shared_ptr<Player>    createPlayer(const Json::Value& jsonPlayer);
         std::shared_ptr<Game> createGame(const Json::Value& jsonGame);
 
-        const std::string&     m_szNickName;
+        const std::string     m_szNickName;
     };
 
 }

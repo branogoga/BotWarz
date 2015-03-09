@@ -13,7 +13,7 @@
 namespace BotWarz
 {
 
-    GameFactory::GameFactory(const std::string& i_szNickName)
+    GameFactory::GameFactory(const std::string i_szNickName)
         : m_szNickName(i_szNickName)
     {
     }

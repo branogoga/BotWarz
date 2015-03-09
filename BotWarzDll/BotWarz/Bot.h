@@ -24,7 +24,7 @@ namespace BotWarz {
         Geometry::Point getPosition() const;
         void    setPosition(const Geometry::Point& i_Point);
 
-        Geometry::Point getFuturePosition( double i_dTimeDeltaInMilliseconds = 250.0 );
+        Geometry::Point getFuturePosition( double i_dTimeDeltaInMilliseconds = 250.0 ) const;
 
         double      getPositionX() const;
         double      getPositionY() const;

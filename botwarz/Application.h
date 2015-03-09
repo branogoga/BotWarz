@@ -18,7 +18,7 @@
 class Application
 {
     const DWORD REQUIRED_FRAME_TIME_IN_MILISECONDS = 200;
-    const DWORD SAFETY_MARGIN = 30;
+    const DWORD SAFETY_MARGIN = 10;
 
 	const DWORD FRAME_TIME = REQUIRED_FRAME_TIME_IN_MILISECONDS + SAFETY_MARGIN;
 
@@ -85,6 +85,21 @@ public:
 
                     // we just check if game is not finished and if yes, then break loop
                     reader.parse(msg, json);
+
+                    if (!json["status"].isNull())
+                    {
+                        std::cout << "Status:" << json["status"] << std::endl;
+                        std::cout << "Message:" << json["msg"] << std::endl;
+
+                        // Penalty. We can not send next command sooner than 200ms from now.
+                        end_time = GetTickCount() + FRAME_TIME;
+                    }
+
+                    //if (!json["play"].isNull())
+                    //{
+                        pGame->Update(json);
+                    //}
+
                     if (!json["result"].isNull())
                     {
                         is_finished = true;
@@ -92,9 +107,7 @@ public:
                         break;
                     }
 
-                    pGame->Update(json);
-
-                    //std::cout << "Time: " << timer.getTimeInMilliseconds() << " ms."
+                        //std::cout << "Time: " << timer.getTimeInMilliseconds() << " ms."
                     //    << " - Game UPDATEd.";
 
 

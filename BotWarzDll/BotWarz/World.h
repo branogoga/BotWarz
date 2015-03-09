@@ -1,10 +1,12 @@
 #pragma once
 
+#include "dll.h"
+
 #include <iostream>
 
 namespace BotWarz {
 
-    class World
+    class TESTABLE World
     {
     public:
         World( unsigned i_nSizeX = 900, unsigned i_nSizeY = 600 );

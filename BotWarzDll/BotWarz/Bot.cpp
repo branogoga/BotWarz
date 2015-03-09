@@ -35,7 +35,7 @@ void    Bot::setPosition(const Geometry::Point& i_Position)
     m_Position = i_Position;
 }
 
-Geometry::Point Bot::getFuturePosition(double i_dTimeDeltaInMilliseconds)
+Geometry::Point Bot::getFuturePosition(double i_dTimeDeltaInMilliseconds) const
 {
     double  directionX = cos(Geometry::convertAngleFromDegreesToRadians(getAngleInDegrees()));
     double  directionY = sin(Geometry::convertAngleFromDegreesToRadians(getAngleInDegrees()));

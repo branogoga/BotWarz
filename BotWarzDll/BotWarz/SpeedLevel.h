@@ -43,6 +43,10 @@ namespace BotWarz {
         double i_dSpeed
         );
 
+    TESTABLE double  getMaximalSpeed(
+        const std::vector<SpeedLevel>& vSpeedLevels
+        );
+
 }//namespace BotWarz
 
 std::ostream& operator << (std::ostream& out, const BotWarz::SpeedLevel& speedLevel);

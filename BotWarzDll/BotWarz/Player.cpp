@@ -6,7 +6,7 @@
 
 using namespace BotWarz;
 
-Player::Player( const std::string& i_szNickName ) :
+Player::Player( const std::string i_szNickName ) :
     m_szNickName(i_szNickName)
 {
 }

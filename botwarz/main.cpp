@@ -1,7 +1,7 @@
-#include "TCPClient.h"
 #include "Application.h"
-
 #include "Consts.h"
+#include "TCPClient.h"
+#include "Utils.h"
 
 #include <iostream>
 #include <exception>
@@ -21,14 +21,17 @@ int main()
         return 1;
     }
 
-    try
+    WHILE_TRUE  // Because of crashing TCP connection ...
     {
-        Application app;
-        app.Execute(TOKEN, NICKNAME);
-    }
-    catch (std::exception &e)
-    {
-        std::cout << e.what() << std::endl;
+        try
+        {
+            Application app;
+            app.Execute(TOKEN, NICKNAME);
+        }
+        catch (std::exception &e)
+        {
+            std::cout << e.what() << std::endl;
+        }
     }
 
     // Cleanup Winsock

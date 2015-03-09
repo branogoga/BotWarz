@@ -35,6 +35,8 @@ namespace Geometry {
         double m_Y;
     };
 
+    double dotProduct(const Point& point1, const Point& point2);
+    double dotProductWithPerpendicularVector(const Point& point1, const Point& point2);
     TESTABLE double  distanceSquare(const Point& point1, const Point& point2);
     TESTABLE double  distance(const Point& point1, const Point& point2);
     TESTABLE size_t  closestPointIndex(const std::vector<Point>& i_vPoints, const Point& i_point);
@@ -42,6 +44,11 @@ namespace Geometry {
     TESTABLE double  angleInDegrees(const Point& point1, const Point& point2);
     TESTABLE double  convertAngleFromRadiansToDegrees(double i_dAngleInRadians);
     TESTABLE double  convertAngleFromDegreesToRadians(double i_dAngleInDegrees);
+    TESTABLE bool    areLinesParallel(
+        const Point& startLine1, const Point& endLine1,
+        const Point& startLine2, const Point& endLine2
+        );
+
     TESTABLE bool    doLinesIntersect(
         const Point& startLine1, const Point& endLine1,
         const Point& startLine2, const Point& endLine2

@@ -96,6 +96,22 @@ namespace BotWarz {
         return true;
     }
 
+    double  getMaximalSpeed(
+        const std::vector<SpeedLevel>& vSpeedLevels
+        )
+    {
+        double dMaximalSpeed = vSpeedLevels[0].getSpeed();
+        for each(auto speedLevel in vSpeedLevels)
+        {
+            if (speedLevel.getSpeed() > dMaximalSpeed)
+            {
+                dMaximalSpeed = speedLevel.getSpeed();
+            }
+        }
+
+        return dMaximalSpeed;
+    }
+
 }//namespace BotWarz
 
 std::ostream& operator << (std::ostream& out, const BotWarz::SpeedLevel& speedLevel)

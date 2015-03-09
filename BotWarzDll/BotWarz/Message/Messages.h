@@ -26,7 +26,9 @@ namespace Message
         const std::shared_ptr<BotWarz::Game>& pGame
         )
     {
+        static unsigned nCommandId = 0;
         const char* jsonKeyBots = "bots";
+        const char* jsonKeyCmdId = "cmdId";
 
         // our tactics is to crush enemies before they notice something...
         auto  pStrategy = createStrategy(pGame);
@@ -34,6 +36,7 @@ namespace Message
 
         // serialize to Json
         Json::Value root;
+        root[jsonKeyCmdId] = nCommandId++;
         root[jsonKeyBots] = Json::Value(Json::arrayValue);
 
         //std::cout << "Sengind MoveBots command:" << std::endl;
