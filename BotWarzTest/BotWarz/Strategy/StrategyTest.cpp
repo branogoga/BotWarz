@@ -55,12 +55,12 @@ namespace BotWarzTest
                 );
 
             Assert::AreEqual(
-                45.0,
+                /* (45.0 / 2) */ 22.5,
                 BotWarz::Strategy::calculateMaxAttackAngleInDegrees(10.0, 10.0)
                 );
 
             Assert::AreEqual(
-                26.5,
+                /* (26.5 / 2) */ 13.25,
                 BotWarz::Strategy::calculateMaxAttackAngleInDegrees(10.0, 20.0),
                 1E-01
                 );

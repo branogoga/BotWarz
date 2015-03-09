@@ -52,7 +52,7 @@ namespace BotWarz {
             // Normal case ...
             double x = i_dBotDistance;
             double y = i_dBotRadius;
-            return Geometry::convertAngleFromRadiansToDegrees(atan2(y,x));
+            return Geometry::convertAngleFromRadiansToDegrees(atan2(y,x))/2.0;
         }
 
         //
