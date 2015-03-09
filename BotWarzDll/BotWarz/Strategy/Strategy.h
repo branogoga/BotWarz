@@ -25,6 +25,19 @@ namespace BotWarz {
             const Geometry::Point& i_pPoint
             );
 
+        TESTABLE unsigned    numberOfStepsToReachPoint(
+            const std::shared_ptr<Bot> myBot,
+            const Geometry::Point& pointToReach,
+            const std::vector<SpeedLevel>& i_vSpeedLevels,
+            const double i_dTimeDeltaInMilliseconds = 200.0
+            );
+
+        TESTABLE size_t  findMostReachableBot(
+            const std::vector<std::shared_ptr<BotWarz::Bot>>& i_vBots,
+            const std::shared_ptr<BotWarz::Bot> myBot,
+            const std::vector<BotWarz::SpeedLevel>& i_vSpeedLevels
+            );
+
         TESTABLE bool    isCollisionExpected(
             const BotWarz::Bot& bot1,
             const BotWarz::Bot& bot2,
@@ -35,6 +48,47 @@ namespace BotWarz {
             const double i_dBotRadius,
             const double i_dBotDistance
             );
+
+        class TESTABLE FindEnemyBotPolicyInterface
+        {
+        public:
+            FindEnemyBotPolicyInterface();
+            virtual ~FindEnemyBotPolicyInterface();
+
+            virtual size_t getBotIndex(
+                std::shared_ptr<Bot> myBot,
+                const std::vector < std::shared_ptr<Bot>>& i_vBots
+                ) = 0;
+        };
+
+        class TESTABLE FindClosestBotPolicy : public FindEnemyBotPolicyInterface
+        {
+        public:
+            FindClosestBotPolicy();
+            virtual ~FindClosestBotPolicy();
+
+            virtual size_t getBotIndex(
+                std::shared_ptr<Bot> myBot,
+                const std::vector < std::shared_ptr<Bot>>& i_vBots
+                );
+        };
+
+
+        class TESTABLE FindMostReachableBotPolicy : public FindEnemyBotPolicyInterface
+        {
+        public:
+            FindMostReachableBotPolicy(
+                const std::vector<BotWarz::SpeedLevel>& i_vSpeedLevels
+                );
+            virtual ~FindMostReachableBotPolicy();
+
+            virtual size_t getBotIndex(
+                std::shared_ptr<Bot> myBot,
+                const std::vector < std::shared_ptr<Bot>>& i_vBots
+                );
+        private:
+            std::vector<BotWarz::SpeedLevel> m_vSpeedLevels;
+        };
 
         class TESTABLE ChasingPolicyInterface
         {

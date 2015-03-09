@@ -67,5 +67,30 @@ namespace BotWarzTest
             Assert::AreEqual(-1.0, BotWarz::getMaxAngle(vSpeedLevels, 0.0, -1.0));
             Assert::AreEqual(-1.0, BotWarz::getMaxAngle(vSpeedLevels, 123.4, -1.0));
         }
+
+        TEST_METHOD(TestAccelerate)
+        {
+            std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 10.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 50.0));
+            Assert::AreEqual(20.0, BotWarz::accelerate(10.0, vSpeedLevels));
+            Assert::AreEqual(30.0, BotWarz::accelerate(20.0, vSpeedLevels));
+            Assert::AreEqual(30.0, BotWarz::accelerate(30.0, vSpeedLevels));
+            Assert::AreEqual(10.0, BotWarz::accelerate(0.0, vSpeedLevels));
+            Assert::AreEqual(10.0, BotWarz::accelerate(123456.0, vSpeedLevels));
+        }
+
+        TEST_METHOD(TestBrake)
+        {
+            std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 10.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 50.0));
+            Assert::AreEqual(10.0, BotWarz::brake(20.0, vSpeedLevels));
+            Assert::AreEqual(20.0, BotWarz::brake(30.0, vSpeedLevels));
+            Assert::AreEqual(10.0, BotWarz::brake(10.0, vSpeedLevels));
+            Assert::AreEqual(0.0, BotWarz::brake(123456.0, vSpeedLevels));
+        }
     };
 }

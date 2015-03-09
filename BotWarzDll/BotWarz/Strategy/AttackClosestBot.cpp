@@ -31,7 +31,10 @@ namespace BotWarz {
                 //
                 const std::vector<std::shared_ptr<Bot>>& vEnemyBots = pOtherPlayer->getBots();
 
-                size_t  closestEnemyBotIndex = findClosestBot(vEnemyBots, myBot->getPosition());
+                std::unique_ptr<Strategy::FindEnemyBotPolicyInterface> pEnemyBotFinder =
+                    //std::make_unique<Strategy::FindClosestBotPolicy>();
+                    std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels);
+                size_t  closestEnemyBotIndex = pEnemyBotFinder->getBotIndex(myBot, vEnemyBots);
                 const std::shared_ptr<Bot> closestEnemyBot = vEnemyBots[closestEnemyBotIndex];
 
                 std::cout << " Bot # " << myBot->getId() << " attacking enemy # " << closestEnemyBot->getId() << std::endl;
@@ -44,6 +47,7 @@ namespace BotWarz {
                 Geometry::Point targetPosition = pChasingStrategy->getDestinationPoint();
 
                 // Calculate distance and angle
+                //double dDistanceToTarget = Geometry::distance( targetPosition, myBot->getPosition());
                 double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
                 double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
 
@@ -85,27 +89,27 @@ namespace BotWarz {
                     }
                 }
 
-                //
-                // Avoid collisions with own Bots
-                //
-                for each(auto bot in pMyPlayer->getBots())
-                {
-                    if (bot->getId() != myBot->getId())
-                    {
-                        if (isCollisionExpected(*bot, *myBot, 250.0))
-                        {
-                            std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
+                ////
+                //// Avoid collisions with own Bots
+                ////
+                //for each(auto bot in pMyPlayer->getBots())
+                //{
+                //    if (bot->getId() != myBot->getId())
+                //    {
+                //        if (isCollisionExpected(*bot, *myBot, 250.0))
+                //        {
+                //            std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
 
-                            double dAngle = getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
-                            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
-                            vCommands.push_back(
-                                std::make_shared<Command::Steer>(myBot->getId(), dAngle)
-                                );
+                //            double dAngle = getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
+                //            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
+                //            vCommands.push_back(
+                //                std::make_shared<Command::Steer>(myBot->getId(), dAngle)
+                //                );
 
-                            break;
-                        }
-                    }
-                }
+                //            break;
+                //        }
+                //    }
+                //}
 
                 //
                 // Attack!
@@ -118,11 +122,15 @@ namespace BotWarz {
                     (myBot->getSpeed() + closestEnemyBot->getSpeed()) * dAttackTimeInseconds
                     );
 
+                //const   double dTimeDeltaInMilliseconds = 200.0;
                 bool    isAlignedInAttackPosition = (fabs(dChangeInAngleInDegrees) < dMaxAttackAngle);
                 std::cout << " Bot #" << myBot->getId() << " is aligned in attack position.";
                 if (isAlignedInAttackPosition)
                 {
-                    if (isMaximalSpeed(m_vSpeedLevels, myBot->getSpeed()))
+                    //double dCloseEnoughtDistance = 5 * myBot->getSpeed()*(dTimeDeltaInMilliseconds / 1000.0);
+                    if (isMaximalSpeed(m_vSpeedLevels, myBot->getSpeed()) 
+                        //&& (dDistanceToTarget < dCloseEnoughtDistance)
+                        )
                     {
                         std::cout << "Steer! (" << dChangeInAngleInDegrees << " degrees )" << std::endl;
                         vCommands.push_back(

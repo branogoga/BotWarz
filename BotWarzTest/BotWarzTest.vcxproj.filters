@@ -5,7 +5,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Geometry\PointTest.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>

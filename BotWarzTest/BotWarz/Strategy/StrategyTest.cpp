@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include "BotWarz/Bot.h"
+#include "BotWarz/SpeedLevel.h"
 #include "BotWarz/Strategy/Strategy.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -45,6 +46,54 @@ namespace BotWarzTest
                 (unsigned)BotWarz::Strategy::findClosestBot(vBots, Geometry::Point(132.0, 184.0))
                 );
 
+        }
+
+        TEST_METHOD(TestFindClosestBotPolicy)
+        {
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vBots;
+            vBots.push_back(std::make_shared<BotWarz::Bot>(1, Geometry::Point(100.0, 100.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(2, Geometry::Point(200.0, 100.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(3, Geometry::Point(200.0, 200.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(4, Geometry::Point(100.0, 200.0)));
+
+            BotWarz::Strategy::FindClosestBotPolicy botFinder;
+
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0, 
+                Geometry::Point(0.0,0.0),
+                0.0,
+                10.0
+                );
+
+            myBot->setPosition(Geometry::Point(0.0, 0.0));
+            Assert::AreEqual(
+                (unsigned)0,
+                (unsigned)botFinder.getBotIndex(myBot,vBots)
+                );
+
+            myBot->setPosition(Geometry::Point(175.0, 100.0));
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
+
+            myBot->setPosition(Geometry::Point(168.0, 132.0));
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
+
+            myBot->setPosition(Geometry::Point(210.0, 210.0));
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
+
+            myBot->setPosition(Geometry::Point(132.0, 184.0));
+            Assert::AreEqual(
+                (unsigned)3,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
         }
 
         TEST_METHOD(TestCalculateMaxAttackAngle)
@@ -222,5 +271,124 @@ namespace BotWarzTest
                 );
         }
 
+        TEST_METHOD(TestNumberOfStepsToReachAPoint_MoveForward)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                1,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                10.0
+                );
+
+            const double dTimeDelta = 1000.0;
+
+            // Steer 0, move (100.0,100.0) -> (110.0,110.0)
+            // Steer 0, move (110.0,100.0) -> (120.0,110.0)
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)BotWarz::Strategy::numberOfStepsToReachPoint(myBot, Geometry::Point(120.0, 100.0), createSpeedLevels(), dTimeDelta)
+                );
+
+            // Accelerate (10 -> 30), move (100.0,100.0) -> (110.0,110.0)
+            // Steer 0, move (110.0,100.0) -> (140.0,110.0)
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)BotWarz::Strategy::numberOfStepsToReachPoint(myBot, Geometry::Point(140.0, 100.0), createSpeedLevels(), dTimeDelta)
+                );
+
+        }
+
+        TEST_METHOD(TestNumberOfStepsToReachAPoint_RotateAndMoveForward)
+        {
+            const double dTimeDelta = 1000.0;
+
+            {
+                auto myBot = std::make_shared<BotWarz::Bot>(
+                1,
+                Geometry::Point(100.0, 100.0),
+                -30.0,
+                10.0
+                );
+
+                Assert::AreEqual(
+                    (unsigned)2,
+                    (unsigned)BotWarz::Strategy::numberOfStepsToReachPoint(myBot, Geometry::Point(110.0, 100.0), createSpeedLevels(), dTimeDelta)
+                    );
+            }
+
+            {
+                auto myBot = std::make_shared<BotWarz::Bot>(
+                    1,
+                    Geometry::Point(100.0, 100.0),
+                    -60.0,
+                    10.0
+                    );
+
+                Assert::AreEqual(
+                        (unsigned)3,
+                        (unsigned)BotWarz::Strategy::numberOfStepsToReachPoint(myBot, Geometry::Point(110.0, 100.0), createSpeedLevels(), dTimeDelta)
+                        );
+            }
+
+            {
+                auto myBot = std::make_shared<BotWarz::Bot>(
+                    1,
+                    Geometry::Point(100.0, 100.0),
+                    -20.0,
+                    30.0
+                    );
+
+                Assert::AreEqual(
+                    (unsigned)3,
+                    (unsigned)BotWarz::Strategy::numberOfStepsToReachPoint(myBot, Geometry::Point(110.0, 100.0), createSpeedLevels(), dTimeDelta)
+                    );
+            }
+        }
+
+        TEST_METHOD(TestFindMostReachableBotPolicy)
+        {
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vBots;
+            vBots.push_back(std::make_shared<BotWarz::Bot>(1, Geometry::Point(100.0, 100.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(2, Geometry::Point(200.0, 100.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(3, Geometry::Point(200.0, 200.0)));
+            vBots.push_back(std::make_shared<BotWarz::Bot>(4, Geometry::Point(100.0, 200.0)));
+
+            BotWarz::Strategy::FindMostReachableBotPolicy botFinder(
+                createSpeedLevels()
+                );
+
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(0.0, 0.0),
+                0.0,
+                10.0
+                );
+
+            myBot->setPosition(Geometry::Point(150.0, 100.0));
+            myBot->setAngleInDegrees(180.0);
+            Assert::AreEqual(
+                (unsigned)0,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
+
+            myBot->setPosition(Geometry::Point(150.0, 100.0));
+            myBot->setAngleInDegrees(0.0);
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)botFinder.getBotIndex(myBot, vBots)
+                );
+        }
+
+    private:
+        std::vector<BotWarz::SpeedLevel>    createSpeedLevels()
+        {
+            std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 30.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 15.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(90.0, 10.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(180.0, 5.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(360.0, 2.0));
+            return vSpeedLevels;
+        }
     };
 }

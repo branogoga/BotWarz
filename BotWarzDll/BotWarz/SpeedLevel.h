@@ -47,6 +47,16 @@ namespace BotWarz {
         const std::vector<SpeedLevel>& vSpeedLevels
         );
 
+    TESTABLE double accelerate(
+        const double i_dCurrentSpeed,
+        const std::vector<SpeedLevel>& i_vSpeedlevels
+        );
+
+    TESTABLE double brake(
+        const double i_dCurrentSpeed,
+        const std::vector<SpeedLevel>& i_vSpeedlevels
+        );
+
 }//namespace BotWarz
 
 std::ostream& operator << (std::ostream& out, const BotWarz::SpeedLevel& speedLevel);

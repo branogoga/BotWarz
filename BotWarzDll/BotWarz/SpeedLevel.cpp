@@ -112,6 +112,74 @@ namespace BotWarz {
         return dMaximalSpeed;
     }
 
+    namespace {
+        std::vector<SpeedLevel>::const_iterator   findSpeed(
+            const double i_dCurrentSpeed, 
+            const std::vector<SpeedLevel>& i_vSpeedLevel
+            )
+        {
+            std::vector<SpeedLevel>::const_iterator   it = i_vSpeedLevel.begin();
+            while (it != i_vSpeedLevel.end())
+            {
+                if (it->getSpeed() == i_dCurrentSpeed)
+                {
+                    return it;
+                }
+                it++;
+            }
+
+            return i_vSpeedLevel.end();
+        }
+    }
+
+    double accelerate(
+        const double i_dCurrentSpeed,
+        const std::vector<SpeedLevel>& i_vSpeedLevels
+        )
+    {
+        std::vector<SpeedLevel>::const_iterator it = findSpeed(i_dCurrentSpeed, i_vSpeedLevels);
+        if (it == i_vSpeedLevels.end())
+        {
+            // Value not found.
+            return getMinimalSpeed(i_vSpeedLevels);
+        }
+
+        it++;
+        
+        if (it == i_vSpeedLevels.end())
+        {
+            // Already maximal speed.
+            return i_dCurrentSpeed;
+        }
+
+        return it->getSpeed();
+    }
+
+    double brake(
+        const double i_dCurrentSpeed,
+        const std::vector<SpeedLevel>& i_vSpeedLevels
+        )
+    {
+        std::vector<SpeedLevel>::const_iterator it = findSpeed(i_dCurrentSpeed, i_vSpeedLevels);
+        if (it == i_vSpeedLevels.end())
+        {
+            // Value not found.
+            return 0.0;
+        }
+
+        if (it == i_vSpeedLevels.begin())
+        {
+            // Already minimal speed.
+            return i_dCurrentSpeed;
+        }
+
+        it--;
+
+        return it->getSpeed();
+    }
+
+
+
 }//namespace BotWarz
 
 std::ostream& operator << (std::ostream& out, const BotWarz::SpeedLevel& speedLevel)
