@@ -420,7 +420,6 @@ namespace BotWarzTest
                 );
         }
 
-
         TEST_METHOD(TestSteerClockwiseToClosestEnemyIfNotInAttackAngle)
         {
             auto strategy = createStrategy();
@@ -468,6 +467,124 @@ namespace BotWarzTest
 
             Assert::AreEqual(
                 -30.0,
+                pSteerCommand->getAngle()
+                );
+        }
+
+        TEST_METHOD(TestChooseMoreRechableBotToAttackTo1)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                -45.0,
+                10.0 
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0.0,
+                getMinimalSpeed(m_vSpeedLevels)
+                )
+                );
+
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(50.0, 100.0),
+                0.0,
+                getMinimalSpeed(m_vSpeedLevels)
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+
+            Assert::AreEqual(
+                45.0,
+                pSteerCommand->getAngle()
+                );
+        }
+
+        TEST_METHOD(TestChooseMoreRechableBotToAttackTo2)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                -95.0,
+                10.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0.0,
+                getMinimalSpeed(m_vSpeedLevels)
+                )
+                );
+
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(50.0, 100.0),
+                0.0,
+                getMinimalSpeed(m_vSpeedLevels)
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+
+            Assert::AreEqual(
+                -85.0,
                 pSteerCommand->getAngle()
                 );
         }

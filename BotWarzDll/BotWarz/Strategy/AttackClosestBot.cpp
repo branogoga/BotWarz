@@ -42,7 +42,7 @@ namespace BotWarz {
                 // Calculate chasing target point
                 std::unique_ptr<ChasingPolicyInterface> pChasingStrategy =
                     std::make_unique<CurrentPositionChasingPolicy>(closestEnemyBot);
-                //std::make_unique<FuturePositionChasingPolicy>(closestEnemyBot);
+                    //std::make_unique<FuturePositionChasingPolicy>(closestEnemyBot);
 
                 Geometry::Point targetPosition = pChasingStrategy->getDestinationPoint();
 
@@ -89,27 +89,27 @@ namespace BotWarz {
                     }
                 }
 
-                ////
-                //// Avoid collisions with own Bots
-                ////
-                //for each(auto bot in pMyPlayer->getBots())
-                //{
-                //    if (bot->getId() != myBot->getId())
-                //    {
-                //        if (isCollisionExpected(*bot, *myBot, 250.0))
-                //        {
-                //            std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
+                //
+                // Avoid collisions with own Bots
+                //
+                for each(auto bot in pMyPlayer->getBots())
+                {
+                    if (bot->getId() != myBot->getId())
+                    {
+                        if (isCollisionExpected(*bot, *myBot, 250.0))
+                        {
+                            std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
 
-                //            double dAngle = getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
-                //            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
-                //            vCommands.push_back(
-                //                std::make_shared<Command::Steer>(myBot->getId(), dAngle)
-                //                );
+                            double dAngle = getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
+                            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
+                            vCommands.push_back(
+                                std::make_shared<Command::Steer>(myBot->getId(), dAngle)
+                                );
 
-                //            break;
-                //        }
-                //    }
-                //}
+                            break;
+                        }
+                    }
+                }
 
                 //
                 // Attack!
