@@ -63,6 +63,24 @@ namespace Geometry
             );
     }
 
+    double  normalizeAngleInDegrees(const double i_dAngleInDegrees)
+    {
+        double dAngle = i_dAngleInDegrees;
+
+        while (dAngle < 180.0)
+        {
+            dAngle += 360.0;
+        }
+
+        while (dAngle > 180.0)
+        {
+            dAngle -= 360.0;
+        }
+
+        return dAngle;
+    }
+
+
     double  convertAngleFromRadiansToDegrees(double i_dAngleInRadians)
     {
         const double Pi = 3.14159265358979323846;
@@ -77,9 +95,11 @@ namespace Geometry
 
     double  angleInDegrees(const Point& point1, const Point& point2)
     {
-        return convertAngleFromRadiansToDegrees(
-            angleInRadians(point1, point2)
-            );
+        return normalizeAngleInDegrees(
+                convertAngleFromRadiansToDegrees(
+                    angleInRadians(point1, point2)
+                    )
+                );
     }
 
     bool    areLinesParallel(

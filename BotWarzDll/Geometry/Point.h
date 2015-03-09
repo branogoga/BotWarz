@@ -42,6 +42,7 @@ namespace Geometry {
     TESTABLE size_t  closestPointIndex(const std::vector<Point>& i_vPoints, const Point& i_point);
     TESTABLE double  angleInRadians(const Point& point1, const Point& point2);
     TESTABLE double  angleInDegrees(const Point& point1, const Point& point2);
+    TESTABLE double  normalizeAngleInDegrees(const double i_dAngleInDegrees);
     TESTABLE double  convertAngleFromRadiansToDegrees(double i_dAngleInRadians);
     TESTABLE double  convertAngleFromDegreesToRadians(double i_dAngleInDegrees);
     TESTABLE bool    areLinesParallel(

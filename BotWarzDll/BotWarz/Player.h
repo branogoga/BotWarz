@@ -27,7 +27,7 @@ namespace BotWarz {
         std::vector<std::shared_ptr<Bot>>&    getBots();
         std::shared_ptr<Bot> getBot( unsigned i_nBotId );
         const std::vector<std::shared_ptr<Bot>>&    getBots() const;
-        void setBots(std::vector<std::shared_ptr<Bot>> i_vBots);
+        void setBots(const std::vector<std::shared_ptr<Bot>> i_vBots);
 
     private:
         std::string m_szNickName;

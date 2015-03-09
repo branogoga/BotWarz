@@ -45,7 +45,7 @@ std::shared_ptr<Bot> Player::getBot(unsigned i_nBotId)
 }
 
 
-void Player::setBots(std::vector<std::shared_ptr<Bot>> i_vBots)
+void Player::setBots(const std::vector<std::shared_ptr<Bot>> i_vBots)
 {
     m_vBots = i_vBots;
 }
