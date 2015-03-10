@@ -26,6 +26,12 @@ Game::~Game()
 {
 }
 
+void    Game::advance(const double i_dTimeStepInMilliseconds)
+{
+    m_pMyPlayer->advance(i_dTimeStepInMilliseconds);
+    m_pOtherPlayer->advance(i_dTimeStepInMilliseconds);
+}
+
 void Game::setTime(double i_dTimeInMilliseconds)
 {
     m_dTimeInMilliseconds = i_dTimeInMilliseconds;

@@ -17,6 +17,7 @@ namespace BotWarz {
 
         virtual void    Initialize( const Json::Value& i_jsonGame ) = 0;
         virtual void    Update(const Json::Value& i_jsonPlay) = 0;
+        virtual void    Advance(const double i_dTimeStepInMilliseconds) = 0;
 
         virtual const char* GetMove() = 0;
     };

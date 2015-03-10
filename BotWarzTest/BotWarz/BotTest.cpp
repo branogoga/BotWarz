@@ -123,5 +123,21 @@ namespace BotWarzTest
             Assert::AreEqual(+179.0, bot.getAngleInDegrees());
         }
 
+        TEST_METHOD(TestAdvanceBot)
+        {
+            {
+                BotWarz::Bot bot(1);
+                bot.setPosition(Geometry::Point(100.0, 100.0));
+                bot.setAngleInDegrees(0.0);
+                bot.setSpeed(10);
+
+                bot.advance(1000.0);
+
+                const double dPrecision = 1E-01;
+                Assert::AreEqual(110.0, bot.getPositionX(), dPrecision);
+                Assert::AreEqual(100.0, bot.getPositionY(), dPrecision);
+            }
+        }
+
     };
 }

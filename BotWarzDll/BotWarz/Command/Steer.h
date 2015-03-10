@@ -27,13 +27,11 @@ namespace BotWarz {
                 return "steer";
             }
 
-            void    apply(
-                std::shared_ptr<Bot> bot
-                )
+            void    apply()
             {
-                bot->setAngleInDegrees(
+                m_pBot->setAngleInDegrees(
                     Geometry::normalizeAngleInDegrees(
-                        bot->getAngleInDegrees() + this->getAngle()
+                        m_pBot->getAngleInDegrees() + this->getAngle()
                     )
                     );
             }

@@ -24,6 +24,8 @@ namespace BotWarz {
             );
         virtual ~Game();
 
+        void    advance(const double i_dTimeStepInMilliseconds);
+
         void setTime(double i_dTimeInMilliseconds);
         double getTime() const;
 

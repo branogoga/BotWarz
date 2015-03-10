@@ -21,6 +21,15 @@ std::string Player::getNickName() const
     return m_szNickName;
 }
 
+void    Player::advance(const double i_dTimeStepInMilliseconds)
+{
+    for each(auto bot in m_vBots)
+    {
+        bot->advance(i_dTimeStepInMilliseconds);
+    }
+}
+
+
 std::vector<std::shared_ptr<Bot>>&    Player::getBots()
 {
     return m_vBots;

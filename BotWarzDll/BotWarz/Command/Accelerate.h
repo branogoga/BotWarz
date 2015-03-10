@@ -29,12 +29,10 @@ namespace BotWarz {
                 return "accelerate";
             }
 
-            void    apply(
-                std::shared_ptr<Bot> bot
-                )
+            void    apply()                
             {
-                bot->setSpeed(
-                    accelerate(bot->getSpeed(), m_vSpeedLevels)
+                m_pBot->setSpeed(
+                    accelerate(m_pBot->getSpeed(), m_vSpeedLevels)
                     );
             }
 

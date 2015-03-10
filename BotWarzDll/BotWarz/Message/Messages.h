@@ -48,6 +48,13 @@ namespace Message
         }
         //std::cout << std::endl;
 
+        // Apply commands
+        for each(auto command in commands)
+        {
+            command->apply();
+        }
+
+        // Serialize to string
         Json::FastWriter writer;
         return writer.write(root);
     }

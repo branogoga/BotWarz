@@ -23,6 +23,7 @@ namespace BotWarz {
         virtual ~Player();
 
         std::string getNickName() const;
+        void    advance(const double i_dTimeStepInMilliseconds);
 
         std::vector<std::shared_ptr<Bot>>&    getBots();
         std::shared_ptr<Bot> getBot( unsigned i_nBotId );

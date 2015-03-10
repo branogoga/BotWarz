@@ -43,6 +43,12 @@ namespace BotWarz
             UpdatePlayers(jsonPlay[jsonKeyPlayers]);
         }
 
+        void    Advance(const double i_dTimeStepInMilliseconds)
+        {
+            m_pGame->advance(i_dTimeStepInMilliseconds);
+        }
+
+
         bool    isMyPlayer(const Json::Value& jsonPlayer)
         {
             const char* jsonKeyPlayerNickName = "nickname";

@@ -27,9 +27,7 @@ namespace BotWarz {
             {
             }
 
-            virtual void    apply(
-                std::shared_ptr<Bot> /*bot*/
-                ) = 0;
+            virtual void    apply() = 0;
 
             virtual unsigned getBotId() const = 0;
             virtual std::string getCommand() const = 0;

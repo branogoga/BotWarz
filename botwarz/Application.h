@@ -62,6 +62,7 @@ public:
                 applicationDeleter
             );
             pGame->Initialize(json);
+            int lastGameUpdateTime = GetTickCount();
 
             Timer timer;
 
@@ -69,6 +70,9 @@ public:
             bool is_finished = false;
             while (!is_finished)
             {
+                pGame->Advance( GetTickCount() - lastGameUpdateTime );
+                lastGameUpdateTime = GetTickCount();
+
                 // send command on server
                 std::string szMoveMessage = pGame->GetMove();
                 m_client.Send(szMoveMessage);
@@ -97,6 +101,7 @@ public:
 
                     //if (!json["play"].isNull())
                     //{
+                        lastGameUpdateTime = GetTickCount();
                         pGame->Update(json);
                     //}
 
@@ -114,7 +119,7 @@ public:
                     // update wait time and break if 
                     wait_time = end_time - GetTickCount();
                     if (wait_time < 0)
-                        break;
+                        break;  // Send commands again
                 }
             }
         }

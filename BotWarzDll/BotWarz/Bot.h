@@ -19,12 +19,14 @@ namespace BotWarz {
 
         virtual ~Bot();
 
+        void    advance(const double i_dTimeStepInMilliseconds);
+
         unsigned    getId() const;
 
         Geometry::Point getPosition() const;
         void    setPosition(const Geometry::Point& i_Point);
 
-        Geometry::Point getFuturePosition( double i_dTimeDeltaInMilliseconds = 250.0 ) const;
+        Geometry::Point getFuturePosition( const double i_dTimeDeltaInMilliseconds = 250.0 ) const;
 
         double      getPositionX() const;
         double      getPositionY() const;

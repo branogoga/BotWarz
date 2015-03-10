@@ -54,7 +54,7 @@ namespace BotWarz {
             }
 
 
-        private:
+        protected:
             std::shared_ptr<Bot>   m_pBot;
         };
 
