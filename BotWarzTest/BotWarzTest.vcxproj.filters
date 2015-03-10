@@ -31,5 +31,8 @@
     <Filter Include="BotWarz\Strategy">
       <UniqueIdentifier>{db7dda3d-149f-4949-8e22-e993e4110e4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BotWarz\Command">
+      <UniqueIdentifier>{8acc8b17-7da6-41f2-a016-800bd350b000}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

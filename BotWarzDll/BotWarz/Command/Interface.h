@@ -1,5 +1,8 @@
 #pragma once
 
+#include "dll.h"
+
+#include <memory>
 #include <string>
 
 namespace Json {
@@ -7,9 +10,12 @@ namespace Json {
 }
 
 namespace BotWarz {
+
+    class Bot;
+
     namespace Command {
 
-        class Interface
+        class TESTABLE Interface
         {
         public:
 
@@ -21,12 +27,15 @@ namespace BotWarz {
             {
             }
 
+            virtual void    apply(
+                std::shared_ptr<Bot> /*bot*/
+                ) = 0;
+
             virtual unsigned getBotId() const = 0;
             virtual std::string getCommand() const = 0;
             virtual std::ostream& toStream(std::ostream& out) const = 0;
             virtual Json::Value toJson() const = 0;
         };
-
 
     }//namespace Command
 }//namespace BotWarz

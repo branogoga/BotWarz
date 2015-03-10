@@ -2,15 +2,18 @@
 
 #include "./Base.h"
 
+//#pragma warning(push)
+//#pragma warning(disable: 4251 /* Shared_ptr going across Dll (Test) */ )
+
 namespace BotWarz {
     namespace Command {
 
-        class Steer : public Base
+        class TESTABLE Steer : public Base
         {
         public:
 
-            Steer(unsigned i_nBotId, double i_dAngle)
-                : Base(i_nBotId)
+            Steer(std::shared_ptr<Bot> i_pBot, double i_dAngle)
+                : Base(i_pBot)
                 , m_dAngle(i_dAngle)
             {
             }
@@ -22,6 +25,17 @@ namespace BotWarz {
             virtual std::string getCommand() const
             {
                 return "steer";
+            }
+
+            void    apply(
+                std::shared_ptr<Bot> bot
+                )
+            {
+                bot->setAngleInDegrees(
+                    Geometry::normalizeAngleInDegrees(
+                        bot->getAngleInDegrees() + this->getAngle()
+                    )
+                    );
             }
 
             double getAngle() const
@@ -50,3 +64,5 @@ namespace BotWarz {
 
     }//namespace Command
 }//namespace BotWarz
+
+//#pragma warning(pop)

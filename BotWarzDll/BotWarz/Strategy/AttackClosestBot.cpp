@@ -66,7 +66,10 @@ namespace BotWarz {
                     if (m_pWorld->isInside(futurePosition.x(), futurePosition.y(), m_dBotRadius))
                     {
                         vCommands.push_back(
-                            std::make_shared<Command::Accelerate>(myBot->getId())
+                            std::make_shared<Command::Accelerate>(
+                                myBot,
+                                m_vSpeedLevels
+                                )
                             );
                     }
                     else
@@ -81,7 +84,7 @@ namespace BotWarz {
 
                         vCommands.push_back(
                             std::make_shared<Command::Steer>(
-                                myBot->getId(),
+                                myBot,
                                 dAngle  
                             )
                             );
@@ -103,7 +106,7 @@ namespace BotWarz {
                             double dAngle = getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
                             std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
                             vCommands.push_back(
-                                std::make_shared<Command::Steer>(myBot->getId(), dAngle)
+                                std::make_shared<Command::Steer>(myBot, dAngle)
                                 );
 
                             break;
@@ -134,7 +137,7 @@ namespace BotWarz {
                     {
                         std::cout << "Steer! (" << dChangeInAngleInDegrees << " degrees )" << std::endl;
                         vCommands.push_back(
-                            std::make_shared<Command::Steer>(myBot->getId(), dChangeInAngleInDegrees)
+                            std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees)
                             );
                         continue;
                     }
@@ -142,7 +145,10 @@ namespace BotWarz {
                     {
                         std::cout << " Accelerate!" << std::endl;
                         vCommands.push_back(
-                            std::make_shared<Command::Accelerate>(myBot->getId())
+                            std::make_shared<Command::Accelerate>(
+                                myBot,
+                                m_vSpeedLevels
+                                )
                             );
                         continue;
                     }
@@ -158,14 +164,17 @@ namespace BotWarz {
                 {
                     std::cout << " Break! " << std::endl;
                     vCommands.push_back(
-                        std::make_shared<Command::Brake>(myBot->getId())
+                        std::make_shared<Command::Brake>(
+                            myBot,
+                            m_vSpeedLevels
+                            )
                         );
                     continue;
                 }
 
                 std::cout << "Steer! (" << dChangeInAngleInDegrees << " degrees )" << std::endl;
                 vCommands.push_back(
-                    std::make_shared<Command::Steer>(myBot->getId(), dChangeInAngleInDegrees)
+                    std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees)
                     );
             }
 

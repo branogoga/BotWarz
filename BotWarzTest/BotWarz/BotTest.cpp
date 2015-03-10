@@ -79,5 +79,49 @@ namespace BotWarzTest
             }
         }
 
-	};
+        TEST_METHOD(TestSetAngle)
+        {
+            BotWarz::Bot    bot(1);
+
+            bot.setAngleInDegrees(0.0);
+            Assert::AreEqual(0.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+15.0);
+            Assert::AreEqual(+15.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-15.0);
+            Assert::AreEqual(-15.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+30.0);
+            Assert::AreEqual(+30.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-30.0);
+            Assert::AreEqual(-30.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+90.0);
+            Assert::AreEqual(+90.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-90.0);
+            Assert::AreEqual(-90.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+160.0);
+            Assert::AreEqual(+160.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-160.0);
+            Assert::AreEqual(-160.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+180.0);
+            Assert::AreEqual(+180.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-180.0);
+            Assert::AreEqual(+180.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(+181.0);
+            Assert::AreEqual(-179.0, bot.getAngleInDegrees());
+
+            bot.setAngleInDegrees(-181.0);
+            Assert::AreEqual(+179.0, bot.getAngleInDegrees());
+        }
+
+    };
 }

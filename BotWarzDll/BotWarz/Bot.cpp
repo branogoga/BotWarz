@@ -62,7 +62,7 @@ double      Bot::getPositionY() const
 
 void        Bot::setAngleInDegrees(double i_dAngleInDegrees)
 {
-    m_dAngleInDegrees = i_dAngleInDegrees;
+    m_dAngleInDegrees = Geometry::normalizeAngleInDegrees(i_dAngleInDegrees);
 }
 
 void        Bot::adjustAngleInDegrees(double i_dChangeOfAngleInDegrees)
