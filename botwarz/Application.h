@@ -166,7 +166,7 @@ public:
                             << pGame->GetPlayerNickname() << csvSeparator
                             << pGame->GetEnemyNickname() << csvSeparator
                             << resultTime << csvSeparator
-                            << (pGame->GetPlayerNickname()==resultWinnerNickname) ? "win" : "loose" << csvSeparator
+                            << ((pGame->GetPlayerNickname()==resultWinnerNickname) ? std::string("win") : std::string("loose")) << csvSeparator
                             << resultWinnerNickname << csvSeparator
                             << resultWinnerNumberOfBots << csvSeparator
                             << resultLooserNickname << csvSeparator
