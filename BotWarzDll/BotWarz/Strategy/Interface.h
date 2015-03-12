@@ -2,8 +2,9 @@
 
 #include "dll.h"
 
-#include <vector>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace BotWarz {
 
@@ -32,6 +33,7 @@ namespace BotWarz {
                 const std::shared_ptr<Player> pOtherPlayer
                 ) = 0;
 
+            virtual std::string getName() const = 0;
         };
 
 

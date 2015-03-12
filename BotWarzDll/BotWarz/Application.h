@@ -1,7 +1,10 @@
 #pragma once
 
 #include "dll.h"
+
 #include "boost/noncopyable.hpp"
+
+#include <string>
 
 namespace Json {
     class Value;
@@ -20,6 +23,9 @@ namespace BotWarz {
         virtual void    Advance(const double i_dTimeStepInMilliseconds) = 0;
 
         virtual const char* GetMove() = 0;
+
+        virtual std::string GetPlayerNickname() const = 0;
+        virtual std::string GetEnemyNickname() const = 0;
     };
 
     DLL_API ApplicationInterface* createApplication(const char* i_szNickName);

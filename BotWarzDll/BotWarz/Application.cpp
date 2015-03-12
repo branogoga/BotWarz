@@ -30,6 +30,8 @@ namespace BotWarz
             const char* jsonKeyGame = "game";
             Json::Value jsonGame = i_jsonGame[jsonKeyGame];
             m_pGame = gameFactory.createFromJson(jsonGame);
+
+            m_pGameStrategy = createStrategy(m_pGame);
         }
 
         virtual void    Update(const Json::Value& json)
@@ -48,6 +50,15 @@ namespace BotWarz
             m_pGame->advance(i_dTimeStepInMilliseconds);
         }
 
+        std::string GetEnemyNickname() const
+        {
+            return m_pGame->getOtherPlayer()->getNickName();
+        }
+
+        std::string GetPlayerNickname() const
+        {
+            return m_pGame->getMyPlayer()->getNickName();
+        }
 
         bool    isMyPlayer(const Json::Value& jsonPlayer)
         {
@@ -77,13 +88,13 @@ namespace BotWarz
 
             BotWarz::GameFactory    gameFactory(m_szNickName);
             auto vBots = gameFactory.createBots(jsonBots);
-            io_pPlayer->setBots(vBots);
-            //for each(auto jsonBot in jsonBots)
-            //{
-            //    UpdateBot(io_pPlayer, jsonBot);
-            //}
 
-            //// To Do: Remove killed bots
+            if (vBots.size() == 0)
+            {
+                return;
+            }
+
+            io_pPlayer->setBots(vBots);
         }
 
         void    UpdateBot(std::shared_ptr<BotWarz::Player> io_pPlayer, const Json::Value& jsonBot)
@@ -115,13 +126,23 @@ namespace BotWarz
 
         virtual const char* GetMove()
         {
-            m_szMoveMessage = Message::MoveBots(m_pGame);
+            m_szMoveMessage = Message::MoveBots(m_pGame, m_pGameStrategy);
             return m_szMoveMessage.c_str();
         }
 
     private:
+        std::shared_ptr<BotWarz::Strategy::Interface> createStrategy(const std::shared_ptr<BotWarz::Game> i_pGame)
+        {
+            return std::make_shared<BotWarz::Strategy::AttackClosestBot>(
+                i_pGame->getSpeedLevels(),
+                i_pGame->getBotRadius(),
+                i_pGame->getWorld()
+                );
+        }
+
         std::string m_szNickName;
         std::shared_ptr<Game>   m_pGame;
+        std::shared_ptr<BotWarz::Strategy::Interface> m_pGameStrategy;
 
         std::string m_szMoveMessage;
     };

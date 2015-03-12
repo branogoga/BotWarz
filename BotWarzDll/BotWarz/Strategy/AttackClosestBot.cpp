@@ -15,6 +15,28 @@ namespace BotWarz {
 
     namespace Strategy {
 
+        AttackClosestBot::AttackClosestBot(
+            const std::vector<SpeedLevel>& i_vSpeedLevels,
+            const double i_dBotRadius,
+            const std::shared_ptr<World> i_pWorld
+            ) :
+            m_vSpeedLevels(i_vSpeedLevels),
+            m_dBotRadius(i_dBotRadius),
+            m_pWorld(i_pWorld)
+        {
+            m_enemyBotFinderPolicy =
+                //std::make_unique<Strategy::FindClosestBotPolicy>();
+                std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels);
+
+            std::unique_ptr<ChasingPolicyInterface> m_chasingStrategyPolicy =
+                std::make_unique<CurrentPositionChasingPolicy>();
+            //std::make_unique<FuturePositionChasingPolicy>();
+        }
+
+        AttackClosestBot::~AttackClosestBot()
+        {
+        }
+
         std::vector<std::shared_ptr<Command::Interface>>    
         AttackClosestBot::getCommands(
             const std::shared_ptr<Player> pMyPlayer,
@@ -41,10 +63,10 @@ namespace BotWarz {
 
                 // Calculate chasing target point
                 std::unique_ptr<ChasingPolicyInterface> pChasingStrategy =
-                    std::make_unique<CurrentPositionChasingPolicy>(closestEnemyBot);
-                    //std::make_unique<FuturePositionChasingPolicy>(closestEnemyBot);
+                    std::make_unique<CurrentPositionChasingPolicy>();
+                    //std::make_unique<FuturePositionChasingPolicy>();
 
-                Geometry::Point targetPosition = pChasingStrategy->getDestinationPoint();
+                Geometry::Point targetPosition = pChasingStrategy->getDestinationPoint(closestEnemyBot);
 
                 // Calculate distance and angle
                 //double dDistanceToTarget = Geometry::distance( targetPosition, myBot->getPosition());
@@ -179,6 +201,11 @@ namespace BotWarz {
             }
 
             return vCommands;
+        }
+
+        std::string AttackClosestBot::getName() const
+        {
+            return "AttackClosestBot";
         }
 
     }//namespace Strategy

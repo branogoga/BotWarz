@@ -204,10 +204,10 @@ namespace BotWarzTest
                 100.0
                 );
 
-            BotWarz::Strategy::CurrentPositionChasingPolicy chasingPolicy(pBot);
+            BotWarz::Strategy::CurrentPositionChasingPolicy chasingPolicy;
 
             auto ptExpected = Geometry::Point(100.0, 100.0);
-            auto ptCalculated = chasingPolicy.getDestinationPoint();
+            auto ptCalculated = chasingPolicy.getDestinationPoint(pBot);
             Assert::AreEqual(
                 ptExpected.x(),
                 ptCalculated.x()
@@ -229,11 +229,11 @@ namespace BotWarzTest
 
             const double dTimeDeltaInMilliseconds = 1000.0;
             BotWarz::Strategy::FuturePositionChasingPolicy chasingPolicy(
-                pBot, dTimeDeltaInMilliseconds
+                dTimeDeltaInMilliseconds
                 );
 
             auto ptExpected = Geometry::Point(100.0, 200.0);
-            auto ptCalculated = chasingPolicy.getDestinationPoint();
+            auto ptCalculated = chasingPolicy.getDestinationPoint(pBot);
             Assert::AreEqual(
                 ptExpected.x(),
                 ptCalculated.x()
@@ -255,11 +255,11 @@ namespace BotWarzTest
 
             const double dTimeDeltaInMilliseconds = 1000.0;
             BotWarz::Strategy::FuturePositionChasingPolicy chasingPolicy(
-                pBot, dTimeDeltaInMilliseconds
+                dTimeDeltaInMilliseconds
                 );
 
             auto ptExpected = Geometry::Point(100.0, 100.0);
-            auto ptCalculated = chasingPolicy.getDestinationPoint();
+            auto ptCalculated = chasingPolicy.getDestinationPoint(pBot);
             Assert::AreEqual(
                 ptExpected.x(),
                 ptCalculated.x()

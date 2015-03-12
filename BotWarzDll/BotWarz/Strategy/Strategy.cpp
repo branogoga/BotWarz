@@ -190,8 +190,7 @@ namespace BotWarz {
         //
         // CurrentPositionChasingPolicy
         //
-        CurrentPositionChasingPolicy::CurrentPositionChasingPolicy(const std::shared_ptr<Bot> i_pBot)
-            : m_pBot(i_pBot)
+        CurrentPositionChasingPolicy::CurrentPositionChasingPolicy()
         {
         }
 
@@ -199,19 +198,17 @@ namespace BotWarz {
         {
         }
 
-        Geometry::Point CurrentPositionChasingPolicy::getDestinationPoint()
+        Geometry::Point CurrentPositionChasingPolicy::getDestinationPoint(const std::shared_ptr<Bot> i_pBot)
         {
-            return m_pBot->getPosition();
+            return i_pBot->getPosition();
         }
 
         //
         // FuturePositionChasingPolicy
         //
         FuturePositionChasingPolicy::FuturePositionChasingPolicy(
-            const std::shared_ptr<Bot> i_pBot,
             double i_dTimeDeltaInMilliseconds
             ) :
-            m_pBot(i_pBot),
             m_dTimeDeltaInMilliseconds(i_dTimeDeltaInMilliseconds)
         {
         }
@@ -220,9 +217,9 @@ namespace BotWarz {
         {
         }
 
-        Geometry::Point FuturePositionChasingPolicy::getDestinationPoint()
+        Geometry::Point FuturePositionChasingPolicy::getDestinationPoint(const std::shared_ptr<Bot> i_pBot)
         {
-            return m_pBot->getFuturePosition(m_dTimeDeltaInMilliseconds);
+            return i_pBot->getFuturePosition(m_dTimeDeltaInMilliseconds);
         }
 
 

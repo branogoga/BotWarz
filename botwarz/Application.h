@@ -11,9 +11,10 @@
 #include "Timer.h"
 #include "Utils.h"
 
-#include <string>
-#include <memory>
 #include <assert.h>
+#include <memory>
+#include <string>
+#include <stdio.h>
 
 class Application
 {
@@ -23,7 +24,16 @@ public:
         : m_client(SERVER_NAME, SERVER_PORT)
         , m_FrameTimeSafetyMarginInMiliseconds(5)
         , m_nNumberOfCommandsWithoutTimeViolation(0)
+        , m_szInputLogFilename("Logs/in.txt")
+        , m_szOutputLogFilename("Logs/out.txt")
     {
+        m_pLogger = std::make_shared<Logger>();
+        m_client.setLogger(m_pLogger);
+    }
+
+    ~Application()
+    {
+        m_ResultLog.close();
     }
 
     DWORD   GetFrameTime() const
@@ -51,6 +61,8 @@ public:
         // main loop
         WHILE_TRUE
         {
+            m_pLogger->open(m_szInputLogFilename, m_szOutputLogFilename);
+
             // get game data info
             msg = m_client.ReceiveLine();
 
@@ -123,10 +135,45 @@ public:
                         pGame->Update(json);
                     //}
 
-                    if (!json["result"].isNull())
+                    Json::Value jsonResult = json["result"];
+                    if (!jsonResult.isNull())
                     {
                         is_finished = true;
-                        std::cout << json["result"]["status"] << std::endl;
+
+                        unsigned resultTime = jsonResult["time"].asUInt();
+                        std::string resultStatus = jsonResult["status"].asString();
+
+                        Json::Value jsonWinner = jsonResult["winner"];
+                        std::string resultWinnerNickname = jsonWinner["nickname"].asString();
+                        unsigned    resultWinnerNumberOfBots = jsonWinner["bots"].size();
+
+                        Json::Value jsonLooser = jsonResult["looser"];
+                        std::string resultLooserNickname = "-";
+                        unsigned    resultLooserNumberOfBots = 0;
+                        if (!jsonLooser.isNull())
+                        {
+                            resultLooserNickname = jsonLooser["nickname"].asString();
+                            resultLooserNumberOfBots = jsonLooser["bots"].size();
+                        }
+
+                        std::cout << resultStatus << std::endl;
+
+                        // Write to result log
+                        char csvSeparator = ',';
+                        m_ResultLog.open("Logs/results.csv", std::ios_base::app);
+                        m_ResultLog
+                            << getCurrentTimeAsString() << csvSeparator
+                            << pGame->GetPlayerNickname() << csvSeparator
+                            << pGame->GetEnemyNickname() << csvSeparator
+                            << resultTime << csvSeparator
+                            << (pGame->GetPlayerNickname()==resultWinnerNickname) ? "win" : "loose" << csvSeparator
+                            << resultWinnerNickname << csvSeparator
+                            << resultWinnerNumberOfBots << csvSeparator
+                            << resultLooserNickname << csvSeparator
+                            << resultLooserNumberOfBots << csvSeparator
+                            << std::endl;
+                        m_ResultLog.close();
+
                         break;
                     }
 
@@ -140,10 +187,42 @@ public:
                         break;  // Send commands again
                 }
             }
+
+            // Rename the log files from the game after game ends.
+            m_pLogger->close();
+
+            std::string logFileName = getGameLogFilename(pGame->GetEnemyNickname());
+
+            std::string  inLogFileName = "Logs/" + logFileName + "-in.txt";
+            std::rename(m_szInputLogFilename.c_str(), inLogFileName.c_str());
+
+            std::string  outLogFileName = "Logs/" + logFileName + "-out.txt";
+            std::rename(m_szOutputLogFilename.c_str(), outLogFileName.c_str());
         }
 	}
 
 private:
+
+    std::string getCurrentTimeAsString()
+    {
+        time_t rawtime;
+        struct tm timeinfo;
+        char buffer[80];
+
+        time(&rawtime);
+        localtime_s(&timeinfo, &rawtime);
+
+        strftime(buffer, 80, "%Y-%m-%d-%I-%M-%S", &timeinfo);
+        std::string str(buffer);
+        return str;
+    }
+
+    std::string getGameLogFilename( 
+        const std::string& enemyNickname
+        )
+    {
+        return getCurrentTimeAsString() + "-" + enemyNickname;
+    }
 
     void CheckStatusAndPrintMessage(const char *msg, const char* status)
     {
@@ -173,6 +252,10 @@ private:
 	}
 
 	TCPClient m_client;
+    std::shared_ptr<Logger>  m_pLogger;
+    std::ofstream   m_ResultLog;
+    const std::string m_szInputLogFilename;
+    const std::string m_szOutputLogFilename;
 
     const DWORD m_RequiredFrameTimeInMiliseconds = 200;
     DWORD m_FrameTimeSafetyMarginInMiliseconds;

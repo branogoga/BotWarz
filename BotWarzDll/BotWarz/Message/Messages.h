@@ -13,17 +13,9 @@
 
 namespace Message
 {
-    std::unique_ptr<BotWarz::Strategy::Interface> createStrategy( const std::shared_ptr<BotWarz::Game> i_pGame )
-    {
-        return std::make_unique<BotWarz::Strategy::AttackClosestBot>(
-            i_pGame->getSpeedLevels(),
-            i_pGame->getBotRadius(),
-            i_pGame->getWorld()
-            );
-    }
-
     std::string MoveBots(
-        const std::shared_ptr<BotWarz::Game>& pGame
+        const std::shared_ptr<BotWarz::Game>& i_pGame,
+        const std::shared_ptr<BotWarz::Strategy::Interface> i_pGameStrategy
         )
     {
         static unsigned nCommandId = 0;
@@ -31,8 +23,7 @@ namespace Message
         const char* jsonKeyCmdId = "cmdId";
 
         // our tactics is to crush enemies before they notice something...
-        auto  pStrategy = createStrategy(pGame);
-        auto commands = pStrategy->getCommands(pGame->getMyPlayer(), pGame->getOtherPlayer());
+        auto commands = i_pGameStrategy->getCommands(i_pGame->getMyPlayer(), i_pGame->getOtherPlayer());
 
         // serialize to Json
         Json::Value root;

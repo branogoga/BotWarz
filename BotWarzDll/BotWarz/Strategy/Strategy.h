@@ -96,19 +96,17 @@ namespace BotWarz {
             ChasingPolicyInterface();
             ~ChasingPolicyInterface();
 
-            virtual Geometry::Point getDestinationPoint() = 0;
+            virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot) = 0;
         private:
         };
 
         class TESTABLE CurrentPositionChasingPolicy : public ChasingPolicyInterface
         {
         public:
-            CurrentPositionChasingPolicy( const std::shared_ptr<Bot> i_pBot );
+            CurrentPositionChasingPolicy();
             ~CurrentPositionChasingPolicy();
 
-            virtual Geometry::Point getDestinationPoint();
-        private:
-            std::shared_ptr<Bot> m_pBot;
+            virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot);
         };
 
 
@@ -116,14 +114,12 @@ namespace BotWarz {
         {
         public:
             FuturePositionChasingPolicy(
-                const std::shared_ptr<Bot> i_pBot,
                 double i_dTimeDeltaInMilliseconds = 1000.0
                 );
             ~FuturePositionChasingPolicy();
 
-            virtual Geometry::Point getDestinationPoint();
+            virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot);
         private:
-            std::shared_ptr<Bot> m_pBot;
             double m_dTimeDeltaInMilliseconds;
         };
 

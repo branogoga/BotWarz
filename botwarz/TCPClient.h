@@ -4,28 +4,93 @@
 
 #include "Utils.h"
 
+#include <boost/noncopyable.hpp>
+
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-#include <stdlib.h>
-#include <fstream>
 #include <exception>
+#include <fstream>
+#include <memory>
+#include <stdlib.h>
 #include <string>
 
-#define TCP_LOGGING
-
-class TCPClient
+class Logger : boost::noncopyable
 {
 public:
 
-	TCPClient(const char *server, const char *port)
-	{
-#ifdef TCP_LOGGING
-		m_out.open("out.txt");
-        m_in.open("in.txt");
-#endif
+    Logger()
+    {
+    }
 
+    Logger(
+        const std::string& i_szInFilename, 
+        const std::string& i_szOutFilename
+        )
+    {
+        open(i_szInFilename, i_szOutFilename);
+    }
+
+    virtual ~Logger()
+    {
+        close();
+    }
+
+    void open(
+        const std::string& i_szInFilename = "in.txt", 
+        const std::string& i_szOutFilename = "out.txt"
+        )
+    {
+        m_out.open(i_szInFilename);
+        m_in.open(i_szOutFilename);
+    }
+
+    bool is_open() const
+    {
+        if (m_in.is_open() && m_out.is_open())
+        {
+            return true;
+        }
+
+        if (!m_in.is_open() && !m_out.is_open())
+        {
+            return false;
+        }
+
+        throw std::logic_error("Inconsistent state. One stream is opened, while the other is not.");
+    }
+
+    void close()
+    {
+        m_out.close();
+        m_in.close();
+    }
+
+    std::ostream& getOut()
+    {
+        return m_out;
+    }
+
+    std::ostream& getIn()
+    {
+        return m_in;
+    }
+
+private:
+    std::ofstream m_out;
+    std::ofstream m_in;
+};
+
+class TCPClient : boost::noncopyable
+{
+public:
+
+	TCPClient(
+        const char *server, 
+        const char *port
+        )
+	{
         ADDRINFOA *result = nullptr;
         ADDRINFOA *ptr = nullptr;
 
@@ -87,9 +152,10 @@ public:
             throw std::runtime_error((std::string("send failed with error: ") + std::to_string(WSAGetLastError())).c_str());
 		}
 
-#ifdef TCP_LOGGING
-		m_out << data;
-#endif
+        if (m_pLogger)
+        {
+            m_pLogger->getOut() << data;
+        }
 	}
 
 	std::string ReceiveLine()
@@ -104,9 +170,10 @@ public:
                 std::string result = m_buffer.substr(0, pos);
                 m_buffer.erase(0, pos + 1); // + 1 for '\n'
 
-#ifdef TCP_LOGGING
-                m_in << result << std::endl;
-#endif
+                if (m_pLogger)
+                {
+                    m_pLogger->getIn() << result << std::endl;
+                }
 
                 return result;
             }
@@ -154,9 +221,10 @@ public:
         return ret == 1;
     }
 
-    // disable copy constructor and assignment operator
-    TCPClient(const TCPClient&) = delete;
-    TCPClient& operator=(const TCPClient&) = delete;
+    void setLogger(std::shared_ptr<Logger> i_pLogger)
+    {
+        m_pLogger = i_pLogger;
+    }
 
 private:
 
@@ -172,8 +240,5 @@ private:
 	SOCKET m_socket;
     std::string m_buffer;
 
-#ifdef TCP_LOGGING
-	std::ofstream m_out;
-	std::ofstream m_in;
-#endif
+    std::shared_ptr<Logger> m_pLogger;
 };
