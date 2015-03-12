@@ -17,16 +17,18 @@
 
 class Application
 {
-    const DWORD REQUIRED_FRAME_TIME_IN_MILISECONDS = 200;
-    const DWORD SAFETY_MARGIN = 5;
-
-	const DWORD FRAME_TIME = REQUIRED_FRAME_TIME_IN_MILISECONDS + SAFETY_MARGIN;
-
 public:
 
     Application()
         : m_client(SERVER_NAME, SERVER_PORT)
+        , m_FrameTimeSafetyMarginInMiliseconds(5)
+        , m_nNumberOfCommandsWithoutTimeViolation(0)
     {
+    }
+
+    DWORD   GetFrameTime() const
+    {
+        return m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
     }
 
 	void Execute(const char *token, const char *player_name)
@@ -77,10 +79,17 @@ public:
                 std::string szMoveMessage = pGame->GetMove();
                 m_client.Send(szMoveMessage);
 
+                std::cout << " FrameTime: " << GetFrameTime() << " ms " << std::endl;
+                if (m_nNumberOfCommandsWithoutTimeViolation > 100)
+                {
+                    m_FrameTimeSafetyMarginInMiliseconds-= 5;
+                }
+                m_nNumberOfCommandsWithoutTimeViolation++;
+
                 //std::cout << "Time: " << timer.getTimeInMilliseconds() << " ms."
                 //    << " - Sending MOVE command.";
 
-                DWORD end_time = GetTickCount() + FRAME_TIME;
+                DWORD end_time = GetTickCount() + GetFrameTime();
 
                 int wait_time = end_time - GetTickCount();
                 while (m_client.WaitForMessage(wait_time < 0 ? 0 : wait_time))
@@ -96,7 +105,16 @@ public:
                         std::cout << "Message:" << json["msg"] << std::endl;
 
                         // Penalty. We can not send next command sooner than 200ms from now.
-                        end_time = GetTickCount() + FRAME_TIME;
+                        end_time = GetTickCount() + GetFrameTime();
+
+                        const unsigned frameSafetyMarginIncrement = 30;
+                        const unsigned minAcceptableNumberOfCommandsWithoutTimeViolation = 200;
+                        if (m_nNumberOfCommandsWithoutTimeViolation < minAcceptableNumberOfCommandsWithoutTimeViolation)
+                        {
+                            m_FrameTimeSafetyMarginInMiliseconds += frameSafetyMarginIncrement;
+                        }
+
+                        m_nNumberOfCommandsWithoutTimeViolation = 0;
                     }
 
                     //if (!json["play"].isNull())
@@ -154,6 +172,9 @@ private:
 		return ret;
 	}
 
-
 	TCPClient m_client;
+
+    const DWORD m_RequiredFrameTimeInMiliseconds = 200;
+    DWORD m_FrameTimeSafetyMarginInMiliseconds;
+    unsigned    m_nNumberOfCommandsWithoutTimeViolation;
 };
