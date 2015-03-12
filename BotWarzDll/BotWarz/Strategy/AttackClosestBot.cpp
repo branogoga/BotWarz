@@ -24,13 +24,18 @@ namespace BotWarz {
             m_dBotRadius(i_dBotRadius),
             m_pWorld(i_pWorld)
         {
-            m_enemyBotFinderPolicy =
-                //std::make_unique<Strategy::FindClosestBotPolicy>();
-                std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels);
+            if ((rand() % 2) == 0)
+            {
+                m_enemyBotFinderPolicy = (std::make_unique<Strategy::FindClosestBotPolicy>());
+            }
+            else
+            {
+                m_enemyBotFinderPolicy = (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+            };
 
-            std::unique_ptr<ChasingPolicyInterface> m_chasingStrategyPolicy =
+            m_chasingStrategyPolicy =
                 std::make_unique<CurrentPositionChasingPolicy>();
-            //std::make_unique<FuturePositionChasingPolicy>();
+                //std::make_unique<FuturePositionChasingPolicy>();
         }
 
         AttackClosestBot::~AttackClosestBot()
@@ -53,20 +58,13 @@ namespace BotWarz {
                 //
                 const std::vector<std::shared_ptr<Bot>>& vEnemyBots = pOtherPlayer->getBots();
 
-                std::unique_ptr<Strategy::FindEnemyBotPolicyInterface> pEnemyBotFinder =
-                    //std::make_unique<Strategy::FindClosestBotPolicy>();
-                    std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels);
-                size_t  closestEnemyBotIndex = pEnemyBotFinder->getBotIndex(myBot, vEnemyBots);
+                size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
                 const std::shared_ptr<Bot> closestEnemyBot = vEnemyBots[closestEnemyBotIndex];
 
                 std::cout << " Bot # " << myBot->getId() << " attacking enemy # " << closestEnemyBot->getId() << std::endl;
 
                 // Calculate chasing target point
-                std::unique_ptr<ChasingPolicyInterface> pChasingStrategy =
-                    std::make_unique<CurrentPositionChasingPolicy>();
-                    //std::make_unique<FuturePositionChasingPolicy>();
-
-                Geometry::Point targetPosition = pChasingStrategy->getDestinationPoint(closestEnemyBot);
+                Geometry::Point targetPosition = m_chasingStrategyPolicy->getDestinationPoint(closestEnemyBot);
 
                 // Calculate distance and angle
                 //double dDistanceToTarget = Geometry::distance( targetPosition, myBot->getPosition());
@@ -121,7 +119,7 @@ namespace BotWarz {
                 {
                     if (bot->getId() != myBot->getId())
                     {
-                        if (isCollisionExpected(*bot, *myBot, 250.0))
+                        if (isCollisionExpected(*bot, *myBot, 500.0))
                         {
                             std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
 
@@ -205,7 +203,10 @@ namespace BotWarz {
 
         std::string AttackClosestBot::getName() const
         {
-            return "AttackClosestBot";
+            return "AttackClosestBot-" 
+                + m_enemyBotFinderPolicy->getName() + "-"
+                + m_chasingStrategyPolicy->getName()
+                ;
         }
 
     }//namespace Strategy

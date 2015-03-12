@@ -59,6 +59,8 @@ namespace BotWarz {
                 std::shared_ptr<Bot> myBot,
                 const std::vector < std::shared_ptr<Bot>>& i_vBots
                 ) = 0;
+
+            virtual std::string getName() const = 0;
         };
 
         class TESTABLE FindClosestBotPolicy : public FindEnemyBotPolicyInterface
@@ -71,6 +73,12 @@ namespace BotWarz {
                 std::shared_ptr<Bot> myBot,
                 const std::vector < std::shared_ptr<Bot>>& i_vBots
                 );
+
+            virtual std::string getName() const
+            {
+                return "FindClosestBotPolicy";
+            }
+
         };
 
 
@@ -86,6 +94,12 @@ namespace BotWarz {
                 std::shared_ptr<Bot> myBot,
                 const std::vector < std::shared_ptr<Bot>>& i_vBots
                 );
+
+            virtual std::string getName() const
+            {
+                return "FindMostReachableBotPolicy";
+            }
+
         private:
             std::vector<BotWarz::SpeedLevel> m_vSpeedLevels;
         };
@@ -97,6 +111,7 @@ namespace BotWarz {
             ~ChasingPolicyInterface();
 
             virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot) = 0;
+            virtual std::string getName() const = 0;
         private:
         };
 
@@ -107,8 +122,12 @@ namespace BotWarz {
             ~CurrentPositionChasingPolicy();
 
             virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot);
-        };
 
+            virtual std::string getName() const
+            {
+                return "CurrentPositionChasingPolicy";
+            }
+        };
 
         class TESTABLE FuturePositionChasingPolicy : public ChasingPolicyInterface
         {
@@ -119,6 +138,11 @@ namespace BotWarz {
             ~FuturePositionChasingPolicy();
 
             virtual Geometry::Point getDestinationPoint(const std::shared_ptr<Bot> i_pBot);
+
+            virtual std::string getName() const
+            {
+                return "FuturePositionChasingPolicy";
+            }
         private:
             double m_dTimeDeltaInMilliseconds;
         };

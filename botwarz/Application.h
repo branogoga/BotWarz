@@ -38,7 +38,16 @@ public:
 
     DWORD   GetFrameTime() const
     {
-        return m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
+        return m_RequiredFrameTimeInMiliseconds + 15;
+
+        //DWORD frameTime = m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
+
+        //if (frameTime > 250)
+        //{
+        //    frameTime = 250;
+        //}
+
+        //return frameTime;
     }
 
 	void Execute(const char *token, const char *player_name)
@@ -92,9 +101,10 @@ public:
                 m_client.Send(szMoveMessage);
 
                 std::cout << " FrameTime: " << GetFrameTime() << " ms " << std::endl;
-                if (m_nNumberOfCommandsWithoutTimeViolation > 100)
+                if (m_nNumberOfCommandsWithoutTimeViolation > 20)
                 {
                     m_FrameTimeSafetyMarginInMiliseconds-= 5;
+                    m_nNumberOfCommandsWithoutTimeViolation = 0;
                 }
                 m_nNumberOfCommandsWithoutTimeViolation++;
 
@@ -171,6 +181,7 @@ public:
                             << resultWinnerNumberOfBots << csvSeparator
                             << resultLooserNickname << csvSeparator
                             << resultLooserNumberOfBots << csvSeparator
+                            << pGame->GetStrategyName() << csvSeparator
                             << std::endl;
                         m_ResultLog.close();
 

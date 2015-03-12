@@ -26,6 +26,7 @@ namespace BotWarz {
 
         virtual std::string GetPlayerNickname() const = 0;
         virtual std::string GetEnemyNickname() const = 0;
+        virtual std::string GetStrategyName() const = 0;
     };
 
     DLL_API ApplicationInterface* createApplication(const char* i_szNickName);

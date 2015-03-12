@@ -60,6 +60,12 @@ namespace BotWarz
             return m_pGame->getMyPlayer()->getNickName();
         }
 
+        std::string GetStrategyName() const
+        {
+            return m_pGameStrategy->getName();
+        }
+
+
         bool    isMyPlayer(const Json::Value& jsonPlayer)
         {
             const char* jsonKeyPlayerNickName = "nickname";
