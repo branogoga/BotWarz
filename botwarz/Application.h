@@ -27,8 +27,11 @@ public:
         , m_szInputLogFilename("Logs/in.txt")
         , m_szOutputLogFilename("Logs/out.txt")
     {
-        m_pLogger = std::make_shared<Logger>();
-        m_client.setLogger(m_pLogger);
+        m_pInputLogger = std::make_shared<Logger>();
+        m_client.setInputLogger(m_pInputLogger);
+
+        m_pOutputLogger = std::make_shared<Logger>();
+        m_client.setOutputLogger(m_pOutputLogger);
     }
 
     ~Application()
@@ -38,7 +41,7 @@ public:
 
     DWORD   GetFrameTime() const
     {
-        return m_RequiredFrameTimeInMiliseconds + 15;
+        return m_RequiredFrameTimeInMiliseconds + 30;
 
         //DWORD frameTime = m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
 
@@ -70,7 +73,8 @@ public:
         // main loop
         WHILE_TRUE
         {
-            m_pLogger->open(m_szInputLogFilename, m_szOutputLogFilename);
+            m_pInputLogger->open(m_szInputLogFilename);
+            m_pOutputLogger->open(m_szOutputLogFilename);
 
             // get game data info
             msg = m_client.ReceiveLine();
@@ -81,7 +85,7 @@ public:
                 BotWarz::deleteApplication(pApplication);
             };
             std::unique_ptr<BotWarz::ApplicationInterface, decltype(applicationDeleter)> pGame(
-                BotWarz::createApplication(NICKNAME),
+                BotWarz::createApplication(NICKNAME,m_pOutputLogger),
                 applicationDeleter
             );
             pGame->Initialize(json);
@@ -200,9 +204,13 @@ public:
             }
 
             // Rename the log files from the game after game ends.
-            m_pLogger->close();
+            m_pInputLogger->close();
+            m_pOutputLogger->close();
 
-            std::string logFileName = getGameLogFilename(pGame->GetEnemyNickname());
+            std::string logFileName = getGameLogFilename(
+                pGame->GetEnemyNickname(),
+                pGame->GetId()
+                );
 
             std::string  inLogFileName = "Logs/" + logFileName + "-in.txt";
             std::rename(m_szInputLogFilename.c_str(), inLogFileName.c_str());
@@ -223,16 +231,17 @@ private:
         time(&rawtime);
         localtime_s(&timeinfo, &rawtime);
 
-        strftime(buffer, 80, "%Y-%m-%d-%I-%M-%S", &timeinfo);
+        strftime(buffer, 80, "%Y-%m-%d-%H-%M-%S", &timeinfo);
         std::string str(buffer);
         return str;
     }
 
     std::string getGameLogFilename( 
-        const std::string& enemyNickname
+        const std::string& enemyNickname,
+        unsigned gameId
         )
     {
-        return getCurrentTimeAsString() + "-" + enemyNickname;
+        return getCurrentTimeAsString() + "-" + std::to_string(gameId) + "-" + enemyNickname;
     }
 
     void CheckStatusAndPrintMessage(const char *msg, const char* status)
@@ -263,7 +272,8 @@ private:
 	}
 
 	TCPClient m_client;
-    std::shared_ptr<Logger>  m_pLogger;
+    std::shared_ptr<Logger>  m_pInputLogger;
+    std::shared_ptr<Logger>  m_pOutputLogger;
     std::ofstream   m_ResultLog;
     const std::string m_szInputLogFilename;
     const std::string m_szOutputLogFilename;

@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "Utils.h"
+#include "Logger.h"
 
 #include <boost/noncopyable.hpp>
 
@@ -15,72 +16,6 @@
 #include <memory>
 #include <stdlib.h>
 #include <string>
-
-class Logger : boost::noncopyable
-{
-public:
-
-    Logger()
-    {
-    }
-
-    Logger(
-        const std::string& i_szInFilename, 
-        const std::string& i_szOutFilename
-        )
-    {
-        open(i_szInFilename, i_szOutFilename);
-    }
-
-    virtual ~Logger()
-    {
-        close();
-    }
-
-    void open(
-        const std::string& i_szInFilename = "in.txt", 
-        const std::string& i_szOutFilename = "out.txt"
-        )
-    {
-        m_out.open(i_szInFilename);
-        m_in.open(i_szOutFilename);
-    }
-
-    bool is_open() const
-    {
-        if (m_in.is_open() && m_out.is_open())
-        {
-            return true;
-        }
-
-        if (!m_in.is_open() && !m_out.is_open())
-        {
-            return false;
-        }
-
-        throw std::logic_error("Inconsistent state. One stream is opened, while the other is not.");
-    }
-
-    void close()
-    {
-        m_out.close();
-        m_in.close();
-    }
-
-    std::ostream& getOut()
-    {
-        return m_out;
-    }
-
-    std::ostream& getIn()
-    {
-        return m_in;
-    }
-
-private:
-    std::ofstream m_out;
-    std::ofstream m_in;
-};
 
 class TCPClient : boost::noncopyable
 {
@@ -152,9 +87,9 @@ public:
             throw std::runtime_error((std::string("send failed with error: ") + std::to_string(WSAGetLastError())).c_str());
 		}
 
-        if (m_pLogger)
+        if (m_pInputLogger)
         {
-            m_pLogger->getOut() << data;
+            *m_pInputLogger << data;
         }
 	}
 
@@ -170,9 +105,9 @@ public:
                 std::string result = m_buffer.substr(0, pos);
                 m_buffer.erase(0, pos + 1); // + 1 for '\n'
 
-                if (m_pLogger)
+                if (m_pOutputLogger)
                 {
-                    m_pLogger->getIn() << result << std::endl;
+                    *m_pOutputLogger << result << std::endl;
                 }
 
                 return result;
@@ -221,9 +156,14 @@ public:
         return ret == 1;
     }
 
-    void setLogger(std::shared_ptr<Logger> i_pLogger)
+    void setInputLogger(std::shared_ptr<Logger> i_pLogger)
     {
-        m_pLogger = i_pLogger;
+        m_pInputLogger = i_pLogger;
+    }
+
+    void setOutputLogger(std::shared_ptr<Logger> i_pLogger)
+    {
+        m_pOutputLogger = i_pLogger;
     }
 
 private:
@@ -240,5 +180,6 @@ private:
 	SOCKET m_socket;
     std::string m_buffer;
 
-    std::shared_ptr<Logger> m_pLogger;
+    std::shared_ptr<Logger> m_pInputLogger;
+    std::shared_ptr<Logger> m_pOutputLogger;
 };

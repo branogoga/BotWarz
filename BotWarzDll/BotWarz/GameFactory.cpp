@@ -121,6 +121,7 @@ namespace BotWarz
 
     std::shared_ptr<BotWarz::Game> GameFactory::createGame(const Json::Value& jsonGame)
     {
+        const char* jsonKeyGameId = "id";
         const char* jsonKeyGameTime = "time";
         const char* jsonKeyBotRadius = "botRadius";
         const char* jsonKeyWorld = "world";
@@ -133,7 +134,8 @@ namespace BotWarz
         auto pGame = std::make_shared<BotWarz::Game>(
             pWorld,
             vSpeedLevels,
-            jsonGame[jsonKeyBotRadius].asDouble()
+            jsonGame[jsonKeyBotRadius].asDouble(),
+            jsonGame[jsonKeyGameId].asUInt()
             );
         pGame->setTime(jsonGame[jsonKeyGameTime].asDouble());
 

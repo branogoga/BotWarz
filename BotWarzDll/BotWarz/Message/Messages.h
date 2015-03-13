@@ -5,7 +5,6 @@
 #include "BotWarz/Player.h"
 #include "BotWarz/Command/Interface.h"
 #include "BotWarz/Strategy/Interface.h"
-#include "BotWarz/Strategy/AttackClosestBot.h"
 #include "jsoncpp/include/json/json.h"
 
 #include <string>

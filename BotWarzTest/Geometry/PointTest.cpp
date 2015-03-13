@@ -135,5 +135,75 @@ namespace BotWarzTest
 
             Assert::IsFalse(Geometry::doLinesIntersect(startLine1, endLine1, startLine4, endLine4));
         }
+
+        TEST_METHOD(TestLineAngle)
+        {
+            {
+                Geometry::Point startLine1(100.0, 100.0);
+                Geometry::Point endLine1(200.0, 100.0);
+
+                Geometry::Point startLine2(50.0, 50.0);
+                Geometry::Point endLine2(50.0, 150.0);
+
+                Assert::AreEqual(
+                    90.0,
+                    Geometry::lineAngleInDegrees(startLine1, endLine1, startLine2, endLine2)
+                    );
+            }
+
+            {
+            Geometry::Point startLine1(100.0, 100.0);
+            Geometry::Point endLine1(200.0, 100.0);
+
+            Geometry::Point startLine2(50.0, 50.0);
+            Geometry::Point endLine2(150.0, 150.0);
+
+            Assert::AreEqual(
+                45.0,
+                Geometry::lineAngleInDegrees(startLine1, endLine1, startLine2, endLine2),
+                1E-02
+                );
+
+            Assert::AreEqual(
+                180.0 - 45.0,
+                Geometry::lineAngleInDegrees(startLine2, endLine2, startLine1, endLine1),
+                1E-02
+                );
+            }
+        }
+
+        TEST_METHOD(TestPointToLineDistance)
+        {
+            Geometry::Point line1(100.0, 100.0);
+            Geometry::Point line2(200.0, 100.0);
+
+            Assert::AreEqual(
+                50.0,
+                Geometry::pointToLineDistance(
+                Geometry::Point(50.0,100.0), line1, line2
+                )
+                );
+
+            Assert::AreEqual(
+                50.0,
+                Geometry::pointToLineDistance(
+                Geometry::Point(250.0, 100.0), line1, line2
+                )
+                );
+
+            Assert::AreEqual(
+                50.0,
+                Geometry::pointToLineDistance(
+                Geometry::Point(150.0, 150.0), line1, line2
+                )
+                );
+
+            Assert::AreEqual(
+                0.0,
+                Geometry::pointToLineDistance(
+                Geometry::Point(150.0, 100.0), line1, line2
+                )
+                );
+        }
     };
 }

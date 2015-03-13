@@ -9,12 +9,14 @@ using namespace BotWarz;
 Game::Game(
     const std::shared_ptr<World> i_pWorld,
     const std::vector<SpeedLevel>& i_vSpeedLevels,
-    double i_dBotRadiusInPixels
-    ) :
-    m_pWorld(i_pWorld),
-    m_vSpeedLevels(i_vSpeedLevels),
-    m_dTimeInMilliseconds(0.0),
-    m_dBotRadiusInPixels(i_dBotRadiusInPixels)
+    double i_dBotRadiusInPixels,
+    unsigned i_nGameId
+    )
+    : m_pWorld(i_pWorld)
+    , m_vSpeedLevels(i_vSpeedLevels)
+    , m_dTimeInMilliseconds(0.0)
+    , m_dBotRadiusInPixels(i_dBotRadiusInPixels)
+    , m_nId(i_nGameId)
 {
     if (m_vSpeedLevels.empty())
     {
@@ -30,6 +32,11 @@ void    Game::advance(const double i_dTimeStepInMilliseconds)
 {
     m_pMyPlayer->advance(i_dTimeStepInMilliseconds);
     m_pOtherPlayer->advance(i_dTimeStepInMilliseconds);
+}
+
+unsigned Game::getId() const
+{
+    return m_nId;
 }
 
 void Game::setTime(double i_dTimeInMilliseconds)

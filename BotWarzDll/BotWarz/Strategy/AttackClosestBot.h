@@ -10,6 +10,8 @@
 #pragma warning(push)
 #pragma warning(disable: 4251 /* Shared_ptr going across Dll (Test) */ )
 
+class Logger;
+
 namespace BotWarz {
 
     class SpeedLevel;
@@ -27,7 +29,8 @@ namespace BotWarz {
             AttackClosestBot(
                 const std::vector<SpeedLevel>& i_vSpeedLevels,
                 const double i_dBotRadius,
-                const std::shared_ptr<World> i_pWorld
+                const std::shared_ptr<World> i_pWorld,
+                std::shared_ptr<Logger> i_pLogger = nullptr
                 );
 
             virtual ~AttackClosestBot();
@@ -46,6 +49,7 @@ namespace BotWarz {
             const std::vector<SpeedLevel>&  m_vSpeedLevels;
             const double m_dBotRadius;
             const std::shared_ptr<World> m_pWorld;
+            std::shared_ptr<Logger> m_pLogger;
         };
 
     }//namespace Strategy

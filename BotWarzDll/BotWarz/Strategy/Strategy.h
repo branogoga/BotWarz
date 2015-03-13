@@ -49,6 +49,13 @@ namespace BotWarz {
             const double i_dBotDistance
             );
 
+        TESTABLE bool   isStuckedNearTheWall(
+            const std::shared_ptr<BotWarz::Bot> i_pBot,
+            const std::shared_ptr<BotWarz::World> i_pWorld,
+            const std::vector<BotWarz::SpeedLevel>& i_vspeedLevels,
+            double i_dBotRadius
+            );
+
         class TESTABLE FindEnemyBotPolicyInterface
         {
         public:
@@ -133,7 +140,7 @@ namespace BotWarz {
         {
         public:
             FuturePositionChasingPolicy(
-                double i_dTimeDeltaInMilliseconds = 1000.0
+                double i_dTimeDeltaInMilliseconds = 250.0
                 );
             ~FuturePositionChasingPolicy();
 

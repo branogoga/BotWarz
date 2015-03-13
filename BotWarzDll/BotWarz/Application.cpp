@@ -4,8 +4,10 @@
 #include "Bot.h"
 #include "Game.h"
 #include "GameFactory.h"
-#include "BotWarz\Message\Messages.h"
+#include "Logger.h"
 #include "Player.h"
+#include "BotWarz\Message\Messages.h"
+#include "BotWarz\Strategy\AttackClosestBot.h"
 
 #include "jsoncpp/include/json/json.h"
 
@@ -14,8 +16,9 @@ namespace BotWarz
     class Application : public ApplicationInterface
     {
     public:
-        Application(const char* i_szNickName = "")
+        Application(const char* i_szNickName = "", std::shared_ptr<Logger> i_pLogger = nullptr)
             : m_szNickName(i_szNickName)
+            , m_pLogger(i_pLogger)
         {
         }
 
@@ -48,6 +51,11 @@ namespace BotWarz
         void    Advance(const double i_dTimeStepInMilliseconds)
         {
             m_pGame->advance(i_dTimeStepInMilliseconds);
+        }
+
+        unsigned  GetId() const
+        {
+            return m_pGame->getId();
         }
 
         std::string GetEnemyNickname() const
@@ -137,25 +145,32 @@ namespace BotWarz
         }
 
     private:
-        std::shared_ptr<BotWarz::Strategy::Interface> createStrategy(const std::shared_ptr<BotWarz::Game> i_pGame)
+        std::shared_ptr<BotWarz::Strategy::Interface> createStrategy(
+            const std::shared_ptr<BotWarz::Game> i_pGame
+            )
         {
             return std::make_shared<BotWarz::Strategy::AttackClosestBot>(
                 i_pGame->getSpeedLevels(),
                 i_pGame->getBotRadius(),
-                i_pGame->getWorld()
+                i_pGame->getWorld(),
+                m_pLogger
                 );
         }
 
         std::string m_szNickName;
         std::shared_ptr<Game>   m_pGame;
         std::shared_ptr<BotWarz::Strategy::Interface> m_pGameStrategy;
+        std::shared_ptr<Logger> m_pLogger;
 
         std::string m_szMoveMessage;
     };
 
-    ApplicationInterface*    createApplication(const char* i_szNickName)
+    ApplicationInterface*    createApplication(
+        const char* i_szNickName,
+        std::shared_ptr<Logger> i_pLogger
+        )
     {
-        return new Application(i_szNickName);
+        return new Application(i_szNickName,i_pLogger);
     }
 
     void deleteApplication(ApplicationInterface* pApplication)
@@ -163,7 +178,7 @@ namespace BotWarz
         delete pApplication;
     }
 
-    ApplicationInterface::ApplicationInterface(const char* /*i_szNickName*/)
+    ApplicationInterface::ApplicationInterface(const char* /*i_szNickName*/, std::shared_ptr<Logger> /*i_pLogger = nullptr*/)
     {
     }
 

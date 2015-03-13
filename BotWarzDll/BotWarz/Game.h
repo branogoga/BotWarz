@@ -20,11 +20,14 @@ namespace BotWarz {
         Game( 
             const std::shared_ptr<World> i_pWorld,
             const std::vector<SpeedLevel>& i_vSpeedLevels,
-            double i_dBotRadiusInPixels = 20.0
+            double i_dBotRadiusInPixels = 20.0,
+            unsigned i_nGameId = 0
             );
         virtual ~Game();
 
         void    advance(const double i_dTimeStepInMilliseconds);
+
+        unsigned getId() const;
 
         void setTime(double i_dTimeInMilliseconds);
         double getTime() const;
@@ -40,6 +43,7 @@ namespace BotWarz {
         void setOtherPlayer(std::shared_ptr<Player> i_pPlayer);
 
     private:
+        unsigned    m_nId;
         double  m_dBotRadiusInPixels;
         double  m_dTimeInMilliseconds;
         const std::shared_ptr<World>  m_pWorld;

@@ -193,7 +193,7 @@ namespace BotWarzTest
             std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
             vEnemyBots.push_back(
                 std::make_shared<BotWarz::Bot>(nBotId++,
-                Geometry::Point(120.0, 112.0),
+                Geometry::Point(120.0, 105.0),
                 0.0,
                 getMinimalSpeed(m_vSpeedLevels)
                 )
@@ -241,7 +241,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, 150.0),
                 0.0,
-                getMinimalSpeed(m_vSpeedLevels)
+                0.0 //getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
 
@@ -262,7 +262,8 @@ namespace BotWarzTest
 
             Assert::AreEqual(
                 90.0,
-                pSteerCommand->getAngle()
+                pSteerCommand->getAngle(),
+                1E-02
                 );
         }
 
@@ -293,7 +294,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, 50.0),
                 0.0,
-                getMinimalSpeed(m_vSpeedLevels)
+                0.0//getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
 
@@ -314,7 +315,8 @@ namespace BotWarzTest
 
             Assert::AreEqual(
                 -90.0,
-                pSteerCommand->getAngle()
+                pSteerCommand->getAngle(),
+                1E-02
                 );
         }
 
@@ -526,7 +528,8 @@ namespace BotWarzTest
 
             Assert::AreEqual(
                 45.0,
-                pSteerCommand->getAngle()
+                pSteerCommand->getAngle(),
+                1E-02
                 );
         }
 
@@ -585,8 +588,337 @@ namespace BotWarzTest
 
             Assert::AreEqual(
                 -85.0,
-                pSteerCommand->getAngle()
+                pSteerCommand->getAngle(),
+                1E-02
                 );
+        }
+
+        TEST_METHOD(TestBrakeIfMovingFastAndEnemyIsBehind)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                360.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(10.0, 100.0),
+                0.0,
+                getMinimalSpeed(m_vSpeedLevels)
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pBrakeCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
+            Assert::IsTrue(pBrakeCommand != nullptr);
+        }
+
+        TEST_METHOD(TestBrakeIfMovingFastAndCannotTurnToEnemyOnTime)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                180.0 /* 45px in 250ms*/
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 150.0), /* 2.32 steps from target */
+                0.0,
+                0.0
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            double dAngle = Geometry::angleInDegrees(
+                vMyBots[0]->getPosition(),
+                vEnemyBots[0]->getPosition()
+                );
+            Assert::IsTrue(
+                dAngle > 2.5 * BotWarz::getMaxAngle(m_vSpeedLevels, vMyBots[0]->getSpeed())
+                );
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pBrakeCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
+            Assert::IsTrue(pBrakeCommand != nullptr);
+        }
+
+        TEST_METHOD(TestSteerIfMovingFastAndCanTurnToEnemyOnTime)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                180.0 /* 45px in 250ms*/
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 115.0), /* 2.32 steps from target */
+                0.0,
+                0.0
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            double dAngle = Geometry::angleInDegrees(
+                vMyBots[0]->getPosition(),
+                vEnemyBots[0]->getPosition()
+                );
+            Assert::IsTrue(
+                dAngle < 2.0 * BotWarz::getMaxAngle(m_vSpeedLevels, vMyBots[0]->getSpeed())
+                );
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+
+            Assert::AreEqual(
+                8.53,
+                pSteerCommand->getAngle(),
+                1E-02
+                );
+        }
+
+        TEST_METHOD(TestSteerToEnemy1)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(399.01, 90.15),
+                92,
+                30.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(448.68, 89.8),
+                119.0,
+                10
+                )
+                );
+
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(448.58, 189.91),
+                119.0,
+                10
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)1,
+                (unsigned)vCommands.size()
+                );
+
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+
+            Assert::AreEqual(
+                -28.42,
+                pSteerCommand->getAngle(),
+                1E-02
+                );
+        }
+
+        TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetSlowMoving)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                10.0
+                )
+                );
+
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 100.0),
+                180,
+                10
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)vCommands.size()
+                );
+
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+        }
+
+        TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetFastMoving)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                180.0
+                )
+                );
+
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 100.0),
+                180,
+                10
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)vCommands.size()
+                );
+
+            auto pBrakeCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
+            Assert::IsTrue(pBrakeCommand != nullptr);
         }
 
     private:

@@ -4,6 +4,7 @@
 #include "BotWarz/Bot.h"
 #include "BotWarz/SpeedLevel.h"
 #include "BotWarz/Strategy/Strategy.h"
+#include "BotWarz/World.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -106,6 +107,12 @@ namespace BotWarzTest
             Assert::AreEqual(
                 /* (45.0 / 2) */ 22.5,
                 BotWarz::Strategy::calculateMaxAttackAngleInDegrees(10.0, 10.0)
+                );
+
+            Assert::AreEqual(
+                /* (26.5 / 2) */ 13.25,
+                BotWarz::Strategy::calculateMaxAttackAngleInDegrees(10.0, 20.0),
+                1E-01
                 );
 
             Assert::AreEqual(
@@ -377,6 +384,213 @@ namespace BotWarzTest
                 (unsigned)1,
                 (unsigned)botFinder.getBotIndex(myBot, vBots)
                 );
+        }
+
+        TEST_METHOD(TestIsStuckedNearTheWall)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                    0,
+                    Geometry::Point(0.0, 0.0),
+                    0.0,
+                    0.0
+                );
+
+            auto pWorld = std::make_shared<BotWarz::World>();
+            auto vSpeedLevels = createSpeedLevels();
+            double dNoBotRadius = 0.0;
+
+            //
+            // Top Wall
+            //
+            auto ptNearTopWall = Geometry::Point(100.0, 0.0);
+            {
+                myBot->setPosition(ptNearTopWall);
+                myBot->setAngleInDegrees(+1.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearTopWall);
+                myBot->setAngleInDegrees(-1.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearTopWall);
+                myBot->setAngleInDegrees(-179.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearTopWall);
+                myBot->setAngleInDegrees(+179.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            //
+            // Left Wall
+            //
+            auto ptNearLeftWall = Geometry::Point(0.0, 100.0);
+            {
+                myBot->setPosition(ptNearLeftWall);
+                myBot->setAngleInDegrees(-89.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearLeftWall);
+                myBot->setAngleInDegrees(-91.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearLeftWall);
+                myBot->setAngleInDegrees(+91.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearLeftWall);
+                myBot->setAngleInDegrees(+89.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            //
+            // Bottom Wall
+            //
+            auto ptNearBottomWall = Geometry::Point(100.0, pWorld->getSizeY());
+            {
+                myBot->setPosition(ptNearBottomWall);
+                myBot->setAngleInDegrees(-1.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearBottomWall);
+                myBot->setAngleInDegrees(+1.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearBottomWall);
+                myBot->setAngleInDegrees(+179.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearBottomWall);
+                myBot->setAngleInDegrees(-179.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            //
+            // Right Wall
+            //
+            auto ptNearRightWall = Geometry::Point(pWorld->getSizeX(), 100.0);
+            {
+                myBot->setPosition(ptNearRightWall);
+                myBot->setAngleInDegrees(+89.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearRightWall);
+                myBot->setAngleInDegrees(+91.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearRightWall);
+                myBot->setAngleInDegrees(-91.0);
+
+                Assert::IsFalse(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
+            {
+                myBot->setPosition(ptNearRightWall);
+                myBot->setAngleInDegrees(-89.0);
+
+                Assert::IsTrue(
+                    BotWarz::Strategy::isStuckedNearTheWall(
+                    myBot, pWorld, vSpeedLevels, dNoBotRadius
+                    )
+                    );
+            }
+
         }
 
     private:

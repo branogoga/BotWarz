@@ -198,6 +198,74 @@ namespace Geometry
             );
     }
 
+    double     lineAngleInRadians(
+        const Point& line1_start, const Point& line1_end,
+        const Point& line2_start, const Point& line2_end
+        )
+    {
+        double dx21 = line1_end.x() - line1_start.x();
+        double dy21 = line1_end.y() - line1_start.y();
+        double dx31 = line2_end.x() - line2_start.x();
+        double dy31 = line2_end.y() - line2_start.y();
+        double m12 = sqrt(dx21*dx21 + dy21*dy21);
+        double m13 = sqrt(dx31*dx31 + dy31*dy31);
+        double theta = acos((dx21*dx31 + dy21*dy31) / (m12 * m13));
+        return theta;
+    }
+
+    double     lineAngleInDegrees(
+        const Point& line1_start, const Point& line1_end,
+        const Point& line2_start, const Point& line2_end
+        )
+    {
+        return convertAngleFromRadiansToDegrees(
+            lineAngleInRadians(line1_start, line1_end, line2_start, line2_end)
+            );
+    }
+
+    double pointToLineDistanceSquare(
+        const Point& point,
+        const Point& line1,
+        const Point& line2
+        )
+    {
+        const Point& p = point;
+        const Point& v = line1;
+        const Point& w = line2;
+
+        double l2 = distanceSquare(v, w);
+        if (l2 == 0)
+        {
+            return distanceSquare(p, v);
+        }
+
+        double t = ((p.x() - v.x()) * (w.x() - v.x()) + (p.y() - v.y()) * (w.y() - v.y())) / l2;
+        if (t < 0)
+        {
+            return distanceSquare(p, v);
+        }
+
+        if (t > 1)
+        {
+            return distanceSquare(p, w);
+        }
+
+        Point pt(
+            v.x() + t * (w.x() - v.x()),
+            v.y() + t * (w.y() - v.y())
+            );
+
+        return distanceSquare(p, pt);
+    }
+
+    double  pointToLineDistance(
+        const Point& point,
+        const Point& line1,
+        const Point& line2
+        )
+    {
+        return sqrt(pointToLineDistanceSquare(point, line1, line2));
+    }
 
 }//namespace Geometry
 

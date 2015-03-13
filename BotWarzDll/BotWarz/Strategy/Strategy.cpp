@@ -5,6 +5,7 @@
 #include "BotWarz/Bot.h"
 #include "BotWarz/Player.h"
 #include "BotWarz/SpeedLevel.h"
+#include "BotWarz/World.h"
 
 #include <assert.h>
 
@@ -119,6 +120,25 @@ namespace BotWarz {
             double x = i_dBotDistance;
             double y = i_dBotRadius;
             return Geometry::convertAngleFromRadiansToDegrees(atan2(y,x))/2.0;
+        }
+
+        bool   isStuckedNearTheWall(
+            const std::shared_ptr<BotWarz::Bot> i_pBot,
+            const std::shared_ptr<BotWarz::World> i_pWorld,
+            const std::vector<BotWarz::SpeedLevel>& i_vspeedLevels,
+            double i_dBotRadius
+            )
+        {
+            bool bIsStuckedNearTheWall = false;
+            BotWarz::Bot copyOfMyBot = *i_pBot;
+            copyOfMyBot.setSpeed(getMinimalSpeed(i_vspeedLevels));
+            Geometry::Point futurePosition = copyOfMyBot.getFuturePosition();
+            if (!i_pWorld->isInside(futurePosition.x(), futurePosition.y(), i_dBotRadius))
+            {
+                bIsStuckedNearTheWall = true;
+            }
+
+            return bIsStuckedNearTheWall;
         }
 
         //
