@@ -74,18 +74,15 @@
     <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_reader.cpp" />
     <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_value.cpp" />
     <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_writer.cpp" />
-    <ClCompile Include="Config.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sha1\sha1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Config.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Messages.h" />
     <ClInclude Include="sha1\sha1.h" />
     <ClInclude Include="TCPClient.h" />
-    <ClInclude Include="Timer.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>

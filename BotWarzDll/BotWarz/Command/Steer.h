@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./Base.h"
+#include "Geometry/Angle.h"
 
 //#pragma warning(push)
 //#pragma warning(disable: 4251 /* Shared_ptr going across Dll (Test) */ )

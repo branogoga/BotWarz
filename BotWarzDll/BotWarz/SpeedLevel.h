@@ -10,23 +10,22 @@ namespace BotWarz {
     class TESTABLE SpeedLevel
     {
     public:
-        SpeedLevel(double i_dSpeed = 0.0, double i_dMaxAngle = 0.0);
+        SpeedLevel(double i_dSpeed = 0.0, double i_dMaxAngularSpeed = 0.0);
         virtual ~SpeedLevel();
 
         bool operator < (const SpeedLevel & rhs) const;
 
         double    getSpeed() const;
-        double    getMaxAngle() const;
+        double    getMaxAngularSpeed() const;
 
     private:
         double    m_dSpeed;
-        double    m_dMaxAngle;
+        double    m_dMaxAngularSpeed;
     };
 
-    TESTABLE double  getMaxAngle(
+    TESTABLE double  getMaxAngularSpeed(
         const std::vector<SpeedLevel>& vSpeedLevels,
-        double i_dSpeed, 
-        const double i_dDefaultAngle = 30.0
+        double i_dSpeed
         );
 
     TESTABLE bool    isMinimalSpeed(

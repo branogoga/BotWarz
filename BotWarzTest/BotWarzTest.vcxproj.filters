@@ -26,6 +26,9 @@
     <ClCompile Include="Geometry\VectorTest.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\AngleTest.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geometry">

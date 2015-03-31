@@ -80,9 +80,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="BotWarz\Application.h" />
     <ClInclude Include="BotWarz\Bot.h" />
     <ClInclude Include="BotWarz\Command\Accelerate.h" />
@@ -101,6 +98,7 @@
     <ClInclude Include="BotWarz\Strategy\Strategy.h" />
     <ClInclude Include="BotWarz\World.h" />
     <ClInclude Include="dll.h" />
+    <ClInclude Include="Geometry\Angle.h" />
     <ClInclude Include="Geometry\Line.h" />
     <ClInclude Include="Geometry\Point.h" />
     <ClInclude Include="Geometry\Vector.h" />
@@ -137,6 +135,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Geometry\Angle.cpp" />
     <ClCompile Include="Geometry\Line.cpp" />
     <ClCompile Include="Geometry\Point.cpp" />
     <ClCompile Include="Geometry\Vector.cpp" />

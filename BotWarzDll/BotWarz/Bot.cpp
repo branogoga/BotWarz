@@ -1,5 +1,6 @@
 #include "./Bot.h"
 
+#include "Geometry/Angle.h"
 #include "Geometry/Point.h"
 
 using namespace BotWarz;

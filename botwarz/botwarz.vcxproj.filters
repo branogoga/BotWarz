@@ -5,7 +5,6 @@
     <ClCompile Include="sha1\sha1.cpp">
       <Filter>sha1</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp" />
     <ClCompile Include="..\vendor\jsoncpp\src\lib_json\json_reader.cpp">
       <Filter>jsoncpp</Filter>
     </ClCompile>
@@ -23,10 +22,8 @@
       <Filter>sha1</Filter>
     </ClInclude>
     <ClInclude Include="Consts.h" />
-    <ClInclude Include="Config.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Messages.h" />
-    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="jsoncpp">

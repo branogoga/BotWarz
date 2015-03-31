@@ -3,6 +3,8 @@
 
 #include "BotWarz\SpeedLevel.h"
 
+#include <functional>
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace BotWarzTest
@@ -17,7 +19,7 @@ namespace BotWarzTest
             BotWarz::SpeedLevel speedLevel2(20.0, 10.0);
 
             Assert::IsTrue( speedLevel1 < speedLevel2 );
-            //assert( speedLevel2 > speedLevel1 );
+            Assert::IsFalse(speedLevel2 < speedLevel1);
         }
 
         TEST_METHOD(TestGetMinimalSpeed)
@@ -27,6 +29,17 @@ namespace BotWarzTest
             vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
             vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 20.0));
             Assert::AreEqual(10.0, BotWarz::getMinimalSpeed(vSpeedLevels));
+        }
+
+        TEST_METHOD(TestGetMinimalSpeedThrowsOnEmptyContainer)
+        {
+            auto function = [this] {
+                std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+                BotWarz::getMinimalSpeed(vSpeedLevels);
+            };
+            Assert::ExpectException<std::invalid_argument>(
+                function
+                );
         }
 
         TEST_METHOD(TestIsMinimalSpeed)
@@ -42,6 +55,26 @@ namespace BotWarzTest
             Assert::IsFalse(BotWarz::isMinimalSpeed(vSpeedLevels, 123.4));
         }
 
+        TEST_METHOD(TestGetMaximalSpeed)
+        {
+            std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 10.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
+            vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 20.0));
+            Assert::AreEqual(30.0, BotWarz::getMaximalSpeed(vSpeedLevels));
+        }
+
+        TEST_METHOD(TestGetMaximalSpeedThrowsOnEmptyContainer)
+        {
+            auto function = [this] {
+                std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+                BotWarz::getMaximalSpeed(vSpeedLevels);
+            };
+            Assert::ExpectException<std::invalid_argument>(
+                function
+                );
+        }
+
         TEST_METHOD(TestIsMaximalSpeed)
         {
             std::vector<BotWarz::SpeedLevel> vSpeedLevels;
@@ -55,17 +88,29 @@ namespace BotWarzTest
             Assert::IsTrue(BotWarz::isMaximalSpeed(vSpeedLevels, 123.4));
         }
 
-        TEST_METHOD(TestGetMaxAngle)
+        TEST_METHOD(TestGetMaxAngularSpeed)
         {
             std::vector<BotWarz::SpeedLevel> vSpeedLevels;
             vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 10.0));
             vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
             vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 50.0));
-            Assert::AreEqual(10.0, BotWarz::getMaxAngle(vSpeedLevels, 10.0, -1.0));
-            Assert::AreEqual(30.0, BotWarz::getMaxAngle(vSpeedLevels, 20.0, -1.0));
-            Assert::AreEqual(50.0, BotWarz::getMaxAngle(vSpeedLevels, 30.0, -1.0));
-            Assert::AreEqual(-1.0, BotWarz::getMaxAngle(vSpeedLevels, 0.0, -1.0));
-            Assert::AreEqual(-1.0, BotWarz::getMaxAngle(vSpeedLevels, 123.4, -1.0));
+            Assert::AreEqual(10.0, BotWarz::getMaxAngularSpeed(vSpeedLevels, 10.0));
+            Assert::AreEqual(30.0, BotWarz::getMaxAngularSpeed(vSpeedLevels, 20.0));
+            Assert::AreEqual(50.0, BotWarz::getMaxAngularSpeed(vSpeedLevels, 30.0));
+        }
+
+        TEST_METHOD(TestGetMaxAngularSpeedThrowsOnNonExistingSpeed)
+        {
+            auto function = [this] {
+                std::vector<BotWarz::SpeedLevel> vSpeedLevels;
+                vSpeedLevels.push_back(BotWarz::SpeedLevel(10.0, 10.0));
+                vSpeedLevels.push_back(BotWarz::SpeedLevel(20.0, 30.0));
+                vSpeedLevels.push_back(BotWarz::SpeedLevel(30.0, 50.0));
+                BotWarz::getMaxAngularSpeed(vSpeedLevels, 0.0);
+            };
+            Assert::ExpectException<std::invalid_argument>(
+                function
+                );
         }
 
         TEST_METHOD(TestAccelerate)

@@ -8,6 +8,8 @@
 #include "BotWarz/Command/Accelerate.h"
 #include "BotWarz/Command/Brake.h"
 #include "BotWarz/Command/Steer.h"
+#include "Geometry/Angle.h"
+#include "Geometry/Line.h"
 #include "Logger.h"
 
 #include <assert.h>
@@ -28,8 +30,8 @@ namespace BotWarz {
             , m_pLogger(i_pLogger)
         {
             m_enemyBotFinderPolicy = 
-                //(std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
-                (std::make_unique<Strategy::FindClosestBotPolicy>());
+                (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+                //(std::make_unique<Strategy::FindClosestBotPolicy>());
 
             m_chasingStrategyPolicy =
                 std::make_unique<CurrentPositionChasingPolicy>();
@@ -54,7 +56,7 @@ namespace BotWarz {
                 //1.0;
                 i_dDistanceToTarget / pixelsInOneStep;
 
-            double maxSteerableAngle = stepToReachDirectionInCurrentSpeed * getMaxAngle(i_vSpeedLevels, i_dMySpeed);
+            double maxSteerableAngle = stepToReachDirectionInCurrentSpeed * getMaxAngularSpeed(i_vSpeedLevels, i_dMySpeed);
 
             bool canSteer = (maxSteerableAngle >    fabs(i_dAngleToSteer));
             return canSteer;
@@ -98,7 +100,7 @@ namespace BotWarz {
                         // To Do: Find another target.
                         if (isMinimalSpeed(vSpeedLevels, myBot->getSpeed()))
                         {
-                            double dAngle = getMaxAngle(vSpeedLevels, myBot->getSpeed());
+                            double dAngle = getMaxAngularSpeed(vSpeedLevels, myBot->getSpeed());
 
                             if (pLogger)
                             {
@@ -181,7 +183,7 @@ namespace BotWarz {
                     // Turned to the wall
                     int sign = (dChangeInAngleInDegrees >= 0.0) ? +1 : -1;
 
-                    double dAngle = sign * getMaxAngle(
+                    double dAngle = sign * getMaxAngularSpeed(
                         m_vSpeedLevels,
                         getMinimalSpeed(m_vSpeedLevels)
                         );
@@ -233,7 +235,7 @@ namespace BotWarz {
                 //            //double sign = (fabs(dOrientedAngle) > 90.0) ? -1.0 : +1.0;
                 //            double sign = (rand() % 2 == 0) ? -1.0 : +1.0;
 
-                //            double dAngle = sign * getMaxAngle(m_vSpeedLevels, myBot->getSpeed());
+                //            double dAngle = sign * getMaxAngularSpeed(m_vSpeedLevels, myBot->getSpeed());
                 //            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
                 //            vCommands.push_back(
                 //                std::make_shared<Command::Steer>(myBot, dAngle)

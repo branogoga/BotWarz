@@ -6,6 +6,8 @@
 #include "BotWarz/Player.h"
 #include "BotWarz/SpeedLevel.h"
 #include "BotWarz/World.h"
+#include "Geometry/Angle.h"
+#include "Geometry/Line.h"
 
 #include <assert.h>
 
@@ -60,7 +62,7 @@ namespace BotWarz {
             double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), pointToReach);
             double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
 
-            double dMaxAngle = getMaxAngle(
+            double dMaxAngle = getMaxAngularSpeed(
                 i_vSpeedLevels,
                 myBot->getSpeed()
                 );

@@ -13,9 +13,6 @@
 
 namespace BotWarz {
 
-    //template class DLL_API std::shared_ptr<Bot>;
-    //template class DLL_API std::vector<std::shared_ptr<Bot>>;
-
     class  TESTABLE Player : public boost::noncopyable
     {
     public:

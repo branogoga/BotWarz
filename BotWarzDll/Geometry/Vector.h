@@ -42,6 +42,26 @@ namespace Geometry {
 TESTABLE Geometry::Point operator+(const Geometry::Point& point, const Geometry::Vector& vector);
 TESTABLE Geometry::Vector operator-(const Geometry::Point& point1, const Geometry::Point& point2);
 
+TESTABLE Geometry::Vector operator+(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE double operator*(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE Geometry::Vector operator*(double scale, const Geometry::Vector& vector);
+TESTABLE Geometry::Vector operator*(const Geometry::Vector& vector, double scale);
+TESTABLE Geometry::Vector operator/(const Geometry::Vector& vector, double scale);
+
+TESTABLE double lengthSquare(const Geometry::Vector& vector);
+TESTABLE double length(const Geometry::Vector& vector);
+TESTABLE Geometry::Vector normalize(const Geometry::Vector& vector);
+
+TESTABLE double dotProduct(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE bool arePerpendicular(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE double angleInRadians(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE double angleInDegrees(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE bool   isConvexAngle(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+TESTABLE bool   isConcaveAngle(const Geometry::Vector& vector1, const Geometry::Vector& vector2);
+
+TESTABLE Geometry::Vector clockwisePerpendicular(const Geometry::Vector& vector);
+TESTABLE Geometry::Vector counterClockwisePerpendicular(const Geometry::Vector& vector);
+
 std::ostream& operator << (std::ostream& out, const Geometry::Vector& vector);
 
 

@@ -5,9 +5,9 @@
 
 namespace BotWarz {
 
-    SpeedLevel::SpeedLevel(double i_dSpeed, double i_dMaxAngle) :
+    SpeedLevel::SpeedLevel(double i_dSpeed, double i_dMaxAngularSpeed) :
         m_dSpeed(i_dSpeed),
-        m_dMaxAngle(i_dMaxAngle)
+        m_dMaxAngularSpeed(i_dMaxAngularSpeed)
     {
     }
 
@@ -20,9 +20,9 @@ namespace BotWarz {
         return m_dSpeed;
     }
 
-    double    SpeedLevel::getMaxAngle() const
+    double    SpeedLevel::getMaxAngularSpeed() const
     {
-        return m_dMaxAngle;
+        return m_dMaxAngularSpeed;
     }
 
     bool SpeedLevel::operator < (const SpeedLevel & rhs) const 
@@ -30,22 +30,20 @@ namespace BotWarz {
         return getSpeed() < rhs.getSpeed();
     }
 
-    double  getMaxAngle(
+    double  getMaxAngularSpeed(
         const std::vector<SpeedLevel>& vSpeedLevels,
-        double i_dSpeed,
-        const double i_dDefaultAngle
+        double i_dSpeed
         )
     {
         for each(auto speedLevel in vSpeedLevels)
         {
             if (speedLevel.getSpeed() == i_dSpeed)
             {
-                return speedLevel.getMaxAngle();
+                return speedLevel.getMaxAngularSpeed();
             }
         }
 
-        return i_dDefaultAngle;
-        //throw std::invalid_argument("Invalid speed level.");
+        throw std::invalid_argument("Invalid speed level.");
     }
 
     bool    isMinimalSpeed(
@@ -68,6 +66,11 @@ namespace BotWarz {
         const std::vector<SpeedLevel>& vSpeedLevels
         )
     {
+        if (vSpeedLevels.size() == 0)
+        {
+            throw std::invalid_argument("Cannot find minimal speed level of no values.");
+        }
+
         double dMinimalSpeed = vSpeedLevels[0].getSpeed();
         for each(auto speedLevel in vSpeedLevels)
         {
@@ -100,6 +103,11 @@ namespace BotWarz {
         const std::vector<SpeedLevel>& vSpeedLevels
         )
     {
+        if (vSpeedLevels.size() == 0)
+        {
+            throw std::invalid_argument("Cannot find maximal speed level of no values.");
+        }
+
         double dMaximalSpeed = vSpeedLevels[0].getSpeed();
         for each(auto speedLevel in vSpeedLevels)
         {
@@ -128,6 +136,7 @@ namespace BotWarz {
                 it++;
             }
 
+            // Not found.
             return i_vSpeedLevel.end();
         }
     }
@@ -184,7 +193,7 @@ namespace BotWarz {
 
 std::ostream& operator << (std::ostream& out, const BotWarz::SpeedLevel& speedLevel)
 {
-    out << " { speed: " << speedLevel.getSpeed() << ", maxAngle = " << speedLevel.getMaxAngle() << " } ";
+    out << " { speed: " << speedLevel.getSpeed() << ", maxAngle = " << speedLevel.getMaxAngularSpeed() << " } ";
     return out;
 }
 

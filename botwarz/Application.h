@@ -8,10 +8,10 @@
 #include "Consts.h"
 #include "Messages.h"
 #include "TCPClient.h"
-#include "Timer.h"
 #include "Utils.h"
 
 #include <assert.h>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <stdio.h>
@@ -22,7 +22,6 @@ public:
 
     Application()
         : m_client(SERVER_NAME, SERVER_PORT)
-        , m_FrameTimeSafetyMarginInMiliseconds(30)
         , m_szInputLogFilename("Logs/in.txt")
         , m_szOutputLogFilename("Logs/out.txt")
     {
@@ -81,8 +80,6 @@ public:
             );
             pGame->Initialize(json);
             int lastGameUpdateTime = GetTickCount();
-
-            Timer timer;
 
             // loop for one game
             bool is_finished = false;
@@ -254,6 +251,5 @@ private:
     const std::string m_szOutputLogFilename;
 
     const DWORD m_RequiredFrameTimeInMiliseconds = 200;
-    DWORD m_FrameTimeSafetyMarginInMiliseconds;
-    //unsigned    m_nNumberOfCommandsWithoutTimeViolation;
+    const DWORD m_FrameTimeSafetyMarginInMiliseconds = 30;
 };

@@ -294,7 +294,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, 50.0),
                 0.0,
-                0.0//getMinimalSpeed(m_vSpeedLevels)
+                getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
 
@@ -332,7 +332,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                     Geometry::Point(100.0, m_dBotRadius),
                     -45.0,
-                    0.0 /* Stuck near the wall */
+                    getMinimalSpeed(m_vSpeedLevels) /* Stuck near the wall */
                 )
                 );
 
@@ -383,7 +383,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, m_dBotRadius),
                 -45.0,
-                0.0 /* Stuck near the wall */
+                getMinimalSpeed(m_vSpeedLevels) /* Stuck near the wall */
                 )
                 );
 
@@ -434,7 +434,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, m_dBotRadius),
                 -45.0,
-                0.0 /* Stuck near the wall */
+                10.0 /* Stuck near the wall */
                 )
                 );
 
@@ -447,7 +447,7 @@ namespace BotWarzTest
             vEnemyBots.push_back(
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(50.0, 50.0),
-                0.0,
+                10.0,
                 getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
@@ -485,7 +485,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, 100.0),
                 -45.0,
-                10.0 
+                getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
 
@@ -545,7 +545,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(100.0, 100.0),
                 -95.0,
-                10.0
+                getMinimalSpeed(m_vSpeedLevels)
                 )
                 );
 
@@ -676,7 +676,7 @@ namespace BotWarzTest
                 vEnemyBots[0]->getPosition()
                 );
             Assert::IsTrue(
-                dAngle > 2.5 * BotWarz::getMaxAngle(m_vSpeedLevels, vMyBots[0]->getSpeed())
+                dAngle > 2.5 * BotWarz::getMaxAngularSpeed(m_vSpeedLevels, vMyBots[0]->getSpeed())
                 );
 
             auto vCommands = strategy->getCommands(
@@ -730,7 +730,7 @@ namespace BotWarzTest
                 vEnemyBots[0]->getPosition()
                 );
             Assert::IsTrue(
-                dAngle < 2.0 * BotWarz::getMaxAngle(m_vSpeedLevels, vMyBots[0]->getSpeed())
+                dAngle < 2.0 * BotWarz::getMaxAngularSpeed(m_vSpeedLevels, vMyBots[0]->getSpeed())
                 );
 
             auto vCommands = strategy->getCommands(
@@ -765,7 +765,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(399.01, 90.15),
                 92,
-                30.0
+                10.0
                 )
                 );
 
@@ -779,7 +779,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(448.68, 89.8),
                 119.0,
-                10
+                10.0
                 )
                 );
 
@@ -787,7 +787,7 @@ namespace BotWarzTest
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(448.58, 189.91),
                 119.0,
-                10
+                10.0
                 )
                 );
 

@@ -92,6 +92,7 @@
     <ClCompile Include="BotWarz\SpeedLevelTest.cpp" />
     <ClCompile Include="BotWarz\Strategy\AttackClosestBotTest.cpp" />
     <ClCompile Include="BotWarz\Strategy\StrategyTest.cpp" />
+    <ClCompile Include="Geometry\AngleTest.cpp" />
     <ClCompile Include="Geometry\LineTest.cpp" />
     <ClCompile Include="Geometry\PointTest.cpp" />
     <ClCompile Include="Geometry\VectorTest.cpp" />
