@@ -294,9 +294,40 @@ namespace BotWarzTest
 
             Assert::IsFalse(
                 arePerpendicular(
+                Geometry::Vector(1.0, 0.0),
+                Geometry::Vector(1.0, 0.0)
+                )
+                );
+
+            Assert::IsFalse(
+                arePerpendicular(
                     Geometry::Vector(1.0, 0.0),
                     Geometry::Vector(1.0, 1.0)
                     )
+                );
+        }
+
+        TEST_METHOD(TestIsParallel)
+        {
+            Assert::IsFalse(
+                areParallel(
+                Geometry::Vector(1.0, 0.0),
+                Geometry::Vector(0.0, 1.0)
+                )
+                );
+
+            Assert::IsTrue(
+                areParallel(
+                Geometry::Vector(1.0, 0.0),
+                Geometry::Vector(1.0, 0.0)
+                )
+                );
+
+            Assert::IsFalse(
+                areParallel(
+                Geometry::Vector(1.0, 0.0),
+                Geometry::Vector(1.0, 1.0)
+                )
                 );
         }
 

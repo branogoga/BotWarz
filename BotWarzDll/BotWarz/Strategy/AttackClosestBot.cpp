@@ -82,8 +82,10 @@ namespace BotWarz {
                     double distanceToMeToEnemyLine =
                         Geometry::pointToLineDistance(
                         bot->getPosition(),
-                        myBot->getPosition(),
-                        closestEnemyBot->getPosition()
+                        Geometry::Line(
+                            myBot->getPosition(),
+                            closestEnemyBot->getPosition()
+                            )
                         );
 
                     bool    bStaysInBetweenMeAndEnemy =

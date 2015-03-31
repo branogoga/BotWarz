@@ -97,15 +97,11 @@ namespace BotWarz {
             )
         {
             // Simply check intersection of two lines, if bots will not change direction nor speed.
-            const Geometry::Point bot1_start = bot1.getPosition();
-            const Geometry::Point bot1_end = bot1.getFuturePosition(i_dTimeDeltaInMilliseconds);
-
-            const Geometry::Point bot2_start = bot2.getPosition();
-            const Geometry::Point bot2_end = bot2.getFuturePosition(i_dTimeDeltaInMilliseconds);
+            const Geometry::Line trajectoryBot1(bot1.getPosition(), bot1.getFuturePosition(i_dTimeDeltaInMilliseconds));
+            const Geometry::Line trajectoryBot2(bot2.getPosition(), bot2.getFuturePosition(i_dTimeDeltaInMilliseconds));
 
             return Geometry::doLinesIntersect(
-                bot1_start, bot1_end,
-                bot2_start, bot2_end
+                trajectoryBot1, trajectoryBot2
                 );
         }
 

@@ -1,5 +1,6 @@
 #include "./Line.h"
 #include "./Angle.h"
+#include "./Vector.h"
 
 #include <algorithm>
 #include <math.h>
@@ -7,15 +8,13 @@
 namespace Geometry
 {
     bool    areLinesParallel(
-        const Point& startLine1, const Point& endLine1,
-        const Point& startLine2, const Point& endLine2
+        const Line& line1, const Line& line2
         )
     {
-        const double dPrecision = 1E-06;
-        double dIsParallel =
-            (startLine1.x() - endLine1.x()) * (startLine2.y() - endLine2.y())
-            - (startLine1.y() - endLine1.y()) * (startLine2.x() - endLine2.x());
-        return (dIsParallel < dPrecision);
+        return areParallel(
+            line1.direction(),
+            line2.direction()
+            );
     }
 
     namespace {
@@ -92,50 +91,42 @@ namespace Geometry
     }
 
     bool    doLinesIntersect(
-        const Point& startLine1, const Point& endLine1,
-        const Point& startLine2, const Point& endLine2
+        const Line& line1, const Line& line2
         )
     {
         return doIntersect(
-            startLine1, endLine1,
-            startLine2, endLine2
+            line1.from(), line1.to(),
+            line2.from(), line2.to()
             );
     }
 
-    double     lineAngleInRadians(
-        const Point& line1_start, const Point& line1_end,
-        const Point& line2_start, const Point& line2_end
+    double     angleInRadians(
+        const Line& line1, const Line& line2
         )
     {
-        double dx21 = line1_end.x() - line1_start.x();
-        double dy21 = line1_end.y() - line1_start.y();
-        double dx31 = line2_end.x() - line2_start.x();
-        double dy31 = line2_end.y() - line2_start.y();
-        double m12 = sqrt(dx21*dx21 + dy21*dy21);
-        double m13 = sqrt(dx31*dx31 + dy31*dy31);
-        double theta = acos((dx21*dx31 + dy21*dy31) / (m12 * m13));
-        return theta;
+        return angleInRadians(
+            line1.direction(),
+            line2.direction()
+            );
     }
 
-    double     lineAngleInDegrees(
-        const Point& line1_start, const Point& line1_end,
-        const Point& line2_start, const Point& line2_end
+    double     angleInDegrees(
+        const Line& line1, const Line& line2
         )
     {
         return convertAngleFromRadiansToDegrees(
-            lineAngleInRadians(line1_start, line1_end, line2_start, line2_end)
+            angleInRadians(line1, line2)
             );
     }
 
     double pointToLineDistanceSquare(
         const Point& point,
-        const Point& line1,
-        const Point& line2
+        const Line& line
         )
     {
         const Point& p = point;
-        const Point& v = line1;
-        const Point& w = line2;
+        const Point& v = line.from();
+        const Point& w = line.to();
 
         double l2 = distanceSquare(v, w);
         if (l2 == 0)
@@ -164,11 +155,10 @@ namespace Geometry
 
     double  pointToLineDistance(
         const Point& point,
-        const Point& line1,
-        const Point& line2
+        const Line& line
         )
     {
-        return sqrt(pointToLineDistanceSquare(point, line1, line2));
+        return sqrt(pointToLineDistanceSquare(point, line));
     }
 }//namespace Geometry
 

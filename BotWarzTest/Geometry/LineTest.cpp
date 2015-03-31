@@ -13,138 +13,172 @@ namespace BotWarzTest
 		
         TEST_METHOD(TestAreLinesParallelOnParallelLines)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
-            Geometry::Point startLine2(100.0, 200.0);
-            Geometry::Point endLine2(200.0, 200.0);
-            Assert::IsTrue(Geometry::areLinesParallel(startLine1, endLine1, startLine2, endLine2));
+            Geometry::Line line2(
+                Geometry::Point(100.0, 200.0),
+                Geometry::Point(200.0, 200.0)
+            );
+
+            Assert::IsTrue(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestAreLinesParallelPerpendicularLines)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
-            Geometry::Point startLine3(150.0, 50.0);
-            Geometry::Point endLine3(150.0, 150.0);
-            Assert::IsFalse(Geometry::areLinesParallel(startLine1, endLine1, startLine3, endLine3));
+            Geometry::Line line2(
+                Geometry::Point(150.0, 50.0),
+                Geometry::Point(150.0, 150.0)
+                );
+
+            Assert::IsFalse(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestLineIntersetionParallelLines)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
-            // Parallel
-            Geometry::Point startLine2(100.0, 200.0);
-            Geometry::Point endLine2(200.0, 200.0);
+            Geometry::Line line2(
+                Geometry::Point(100.0, 200.0),
+                Geometry::Point(200.0, 200.0)
+                );
 
-            Assert::IsFalse(Geometry::doLinesIntersect(startLine1, endLine1, startLine2, endLine2));
+            Assert::IsTrue(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestLineIntersetionParallelOverlapingLines)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
-            // Parallel
-            Geometry::Point startLine2(50.0, 100.0);
-            Geometry::Point endLine2(150.0, 100.0);
+            Geometry::Line line2(
+                Geometry::Point(50.0, 100.0),
+                Geometry::Point(150.0, 100.0)
+                );
 
-            Assert::IsTrue(Geometry::doLinesIntersect(startLine1, endLine1, startLine2, endLine2));
+            Assert::IsTrue(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestLineIntersetionCrossingLines)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
-            // Crossing each other
-            Geometry::Point startLine3(150.0, 50.0);
-            Geometry::Point endLine3(150.0, 150.0);
+            Geometry::Line line2(
+                Geometry::Point(150.0, 50.0),
+                Geometry::Point(150.0, 150.0)
+                );
 
-            Assert::IsTrue(Geometry::doLinesIntersect(startLine1, endLine1, startLine3, endLine3));
+            Assert::IsFalse(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestLineIntersetionParallelLinesWithoutIntersection)
         {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+            Geometry::Line line1(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
             // Not parallel, but do not cross each other
-            Geometry::Point startLine4(50.0, 50.0);
-            Geometry::Point endLine4(50.0, 150.0);
+            Geometry::Line line2(
+                Geometry::Point(50.0, 50.0),
+                Geometry::Point(50.0, 150.0)
+                );
 
-            Assert::IsFalse(Geometry::doLinesIntersect(startLine1, endLine1, startLine4, endLine4));
+            Assert::IsFalse(Geometry::areLinesParallel(line1, line2));
         }
 
         TEST_METHOD(TestLineAngle)
         {
             {
-                Geometry::Point startLine1(100.0, 100.0);
-                Geometry::Point endLine1(200.0, 100.0);
+                Geometry::Line line1(
+                    Geometry::Point(100.0, 100.0),
+                    Geometry::Point(200.0, 100.0)
+                );
 
-                Geometry::Point startLine2(50.0, 50.0);
-                Geometry::Point endLine2(50.0, 150.0);
+                Geometry::Line line2(
+                    Geometry::Point(50.0, 50.0),
+                    Geometry::Point(50.0, 150.0)
+                );
 
                 Assert::AreEqual(
                     90.0,
-                    Geometry::lineAngleInDegrees(startLine1, endLine1, startLine2, endLine2)
+                    Geometry::angleInDegrees(line1, line2)
                     );
             }
 
             {
-            Geometry::Point startLine1(100.0, 100.0);
-            Geometry::Point endLine1(200.0, 100.0);
+                Geometry::Line line1(
+                    Geometry::Point(100.0, 100.0),
+                    Geometry::Point(200.0, 100.0)
+                    );
 
-            Geometry::Point startLine2(50.0, 50.0);
-            Geometry::Point endLine2(150.0, 150.0);
 
-            Assert::AreEqual(
-                45.0,
-                Geometry::lineAngleInDegrees(startLine1, endLine1, startLine2, endLine2),
-                1E-02
-                );
+                Geometry::Line line2(
+                    Geometry::Point(50.0, 50.0),
+                    Geometry::Point(150.0, 150.0)
+                    );
 
-            Assert::AreEqual(
-                /*180.0 - 45.0*/ 45.0,
-                Geometry::lineAngleInDegrees(startLine2, endLine2, startLine1, endLine1),
-                1E-02
-                );
-        }
+                Assert::AreEqual(
+                    45.0,
+                    Geometry::angleInDegrees(line1, line2),
+                    1E-02
+                    );
+
+                Assert::AreEqual(
+                    /*180.0 - 45.0*/ 45.0,
+                    Geometry::angleInDegrees(line2, line1),
+                    1E-02
+                    );
+            }
         }
 
         TEST_METHOD(TestPointToLineDistance)
         {
-            Geometry::Point line1(100.0, 100.0);
-            Geometry::Point line2(200.0, 100.0);
+            Geometry::Line line(
+                Geometry::Point(100.0, 100.0),
+                Geometry::Point(200.0, 100.0)
+                );
 
             Assert::AreEqual(
                 50.0,
                 Geometry::pointToLineDistance(
-                Geometry::Point(50.0, 100.0), line1, line2
+                Geometry::Point(50.0, 100.0), line
                 )
                 );
 
             Assert::AreEqual(
                 50.0,
                 Geometry::pointToLineDistance(
-                Geometry::Point(250.0, 100.0), line1, line2
+                Geometry::Point(250.0, 100.0), line
                 )
                 );
 
             Assert::AreEqual(
                 50.0,
                 Geometry::pointToLineDistance(
-                Geometry::Point(150.0, 150.0), line1, line2
+                Geometry::Point(150.0, 150.0), line
                 )
                 );
 
             Assert::AreEqual(
                 0.0,
                 Geometry::pointToLineDistance(
-                Geometry::Point(150.0, 100.0), line1, line2
+                Geometry::Point(150.0, 100.0), line
                 )
                 );
         }

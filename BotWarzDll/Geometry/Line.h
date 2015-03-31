@@ -52,28 +52,23 @@ namespace Geometry {
 
     TESTABLE double  pointToLineDistance(
         const Point& point,
-        const Point& line1,
-        const Point& line2
+        const Line& line
         );
 
     TESTABLE bool    areLinesParallel(
-        const Point& startLine1, const Point& endLine1,
-        const Point& startLine2, const Point& endLine2
+        const Line& line1, const Line& line2
         );
 
     TESTABLE bool    doLinesIntersect(
-        const Point& startLine1, const Point& endLine1,
-        const Point& startLine2, const Point& endLine2
+        const Line& line1, const Line& line2
         );
 
-    TESTABLE double     lineAngleInRadians(
-        const Point& line1_start, const Point& line1_end,
-        const Point& line2_start, const Point& line2_end
+    TESTABLE double     angleInRadians(
+        const Line& line1, const Line& line2
         );
 
-    TESTABLE double     lineAngleInDegrees(
-        const Point& line1_start, const Point& line1_end,
-        const Point& line2_start, const Point& line2_end
+    TESTABLE double     angleInDegrees(
+        const Line& line1, const Line& line2
         );
 
 }//namespace Geometry
