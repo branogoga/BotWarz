@@ -165,7 +165,7 @@ namespace BotWarzTest
                 );
 
             Assert::AreEqual(
-                180.0 - 45.0,
+                /*180.0 - 45.0*/ 45.0,
                 Geometry::lineAngleInDegrees(startLine2, endLine2, startLine1, endLine1),
                 1E-02
                 );

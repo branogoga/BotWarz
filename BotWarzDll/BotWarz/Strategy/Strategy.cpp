@@ -141,6 +141,22 @@ namespace BotWarz {
             return bIsStuckedNearTheWall;
         }
 
+        bool   isBotAlignedWithAttackZone(
+            const std::shared_ptr<BotWarz::Bot> i_pBot1,
+            const std::shared_ptr<BotWarz::Bot> i_pBot2
+            )
+        {
+            double dTargetAngleInDegrees = Geometry::angleInDegrees(i_pBot2->getPosition(), i_pBot1->getPosition());
+            double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - i_pBot2->getAngleInDegrees());
+            double dBotsDistance = Geometry::distance(i_pBot1->getPosition(), i_pBot2->getPosition());
+            double dTimeStepInMilliseconds = 250.0;
+            double botsWillChangeDistance = (i_pBot1->getSpeed() + i_pBot2->getSpeed())*(dTimeStepInMilliseconds/1000.0);
+
+            return (fabs(dChangeInAngleInDegrees) < 45.0) && (botsWillChangeDistance > dBotsDistance);
+        }
+
+
+
         //
         // FindEnemyBotPolicyInterface
         //

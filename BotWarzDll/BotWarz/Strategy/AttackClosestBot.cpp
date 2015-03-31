@@ -28,8 +28,8 @@ namespace BotWarz {
             , m_pLogger(i_pLogger)
         {
             m_enemyBotFinderPolicy = 
-                (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
-                //(std::make_unique<Strategy::FindClosestBotPolicy>());
+                //(std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+                (std::make_unique<Strategy::FindClosestBotPolicy>());
 
             m_chasingStrategyPolicy =
                 std::make_unique<CurrentPositionChasingPolicy>();
@@ -245,7 +245,7 @@ namespace BotWarz {
                 //}
 
                 //
-                // Avoid static Bot collisions
+                // Avoid own static Bot collisions
                 //
                 std::shared_ptr<Command::Interface> pAvoidCollisionCommand =
                     avoidStaticBotCollisions(
@@ -283,6 +283,14 @@ namespace BotWarz {
                 if (isAlignedInAttackPosition
                     && (!isMaximalSpeed(m_vSpeedLevels,myBot->getSpeed())))
                 {
+                    // If enemy Bot is turned in attack position and is close enought, do not send any command.
+                    // Rather save time, wait for collision and react sooner in next round, so possibly can won 
+                    // the next match.
+                    if (Strategy::isBotAlignedWithAttackZone(myBot, closestEnemyBot))
+                    {
+                        continue;
+                    }
+
                     if (m_pLogger)
                     {
                         *m_pLogger << " Aligned in attack position. Accelerate!" << std::endl;

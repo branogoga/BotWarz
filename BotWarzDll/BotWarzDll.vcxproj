@@ -97,10 +97,13 @@
     <ClInclude Include="BotWarz\SpeedLevel.h" />
     <ClInclude Include="BotWarz\Strategy\AttackClosestBot.h" />
     <ClInclude Include="BotWarz\Strategy\Interface.h" />
+    <ClInclude Include="BotWarz\Strategy\NoCommands.h" />
     <ClInclude Include="BotWarz\Strategy\Strategy.h" />
     <ClInclude Include="BotWarz\World.h" />
     <ClInclude Include="dll.h" />
+    <ClInclude Include="Geometry\Line.h" />
     <ClInclude Include="Geometry\Point.h" />
+    <ClInclude Include="Geometry\Vector.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -134,7 +137,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Geometry\Line.cpp" />
     <ClCompile Include="Geometry\Point.cpp" />
+    <ClCompile Include="Geometry\Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

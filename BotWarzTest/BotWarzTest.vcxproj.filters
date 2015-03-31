@@ -20,6 +20,12 @@
     <ClCompile Include="BotWarz\Strategy\AttackClosestBotTest.cpp">
       <Filter>BotWarz\Strategy</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\LineTest.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\VectorTest.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geometry">

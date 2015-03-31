@@ -846,7 +846,7 @@ namespace BotWarzTest
             vEnemyBots.push_back(
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(200.0, 100.0),
-                180,
+                90,
                 10
                 )
                 );
@@ -900,7 +900,7 @@ namespace BotWarzTest
             vEnemyBots.push_back(
                 std::make_shared<BotWarz::Bot>(nBotId++,
                 Geometry::Point(200.0, 100.0),
-                180,
+                90,
                 10
                 )
                 );
@@ -919,6 +919,48 @@ namespace BotWarzTest
             auto pBrakeCommand =
                 std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
             Assert::IsTrue(pBrakeCommand != nullptr);
+        }
+
+        TEST_METHOD(TestDoNotSendCommandsIfTurnedToEnemyAndEnemyIsTurnedToMeAndIsCloseEnought)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                180.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(120.0, 100.0),
+                180,
+                180
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
+
+            Assert::AreEqual(
+                (unsigned)0,
+                (unsigned)vCommands.size()
+                );
         }
 
     private:

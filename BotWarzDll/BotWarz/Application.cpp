@@ -7,6 +7,7 @@
 #include "Logger.h"
 #include "Player.h"
 #include "BotWarz\Message\Messages.h"
+#include "BotWarz\Strategy\NoCommands.h"
 #include "BotWarz\Strategy\AttackClosestBot.h"
 
 #include "jsoncpp/include/json/json.h"
@@ -140,8 +141,16 @@ namespace BotWarz
 
         virtual const char* GetMove()
         {
-            m_szMoveMessage = Message::MoveBots(m_pGame, m_pGameStrategy);
-            return m_szMoveMessage.c_str();
+            auto moveMessage = Message::MoveBots(m_pGame, m_pGameStrategy);
+            if (moveMessage != boost::none)
+            {
+                m_szMoveMessage = *moveMessage;
+                return m_szMoveMessage.c_str();
+            }
+            else
+            {
+                return nullptr;
+            }
         }
 
     private:
@@ -149,6 +158,8 @@ namespace BotWarz
             const std::shared_ptr<BotWarz::Game> i_pGame
             )
         {
+            //return std::make_shared<BotWarz::Strategy::NoCommands>();
+
             return std::make_shared<BotWarz::Strategy::AttackClosestBot>(
                 i_pGame->getSpeedLevels(),
                 i_pGame->getBotRadius(),

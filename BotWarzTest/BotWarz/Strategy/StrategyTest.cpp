@@ -386,6 +386,90 @@ namespace BotWarzTest
                 );
         }
 
+        TEST_METHOD(TestIsBotAlignedWithAttackZone_EnemyBotIsTurnedOutwards1)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                10.0
+            );
+
+            auto enemyBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(110.0, 100.0),
+                +90.0,
+                10.0
+                );
+
+            Assert::IsFalse(
+                BotWarz::Strategy::isBotAlignedWithAttackZone(myBot, enemyBot)
+                );
+        }
+
+        TEST_METHOD(TestIsBotAlignedWithAttackZone_EnemyBotIsTurnedOutwards2)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                10.0
+                );
+
+            auto enemyBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(110.0, 100.0),
+                -90.0,
+                10.0
+                );
+
+            Assert::IsFalse(
+                BotWarz::Strategy::isBotAlignedWithAttackZone(myBot, enemyBot)
+                );
+        }
+
+        TEST_METHOD(TestIsBotAlignedWithAttackZone_EnemyBotIsTurnedInwardsButIsFar)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                10.0
+                );
+
+            auto enemyBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(200.0, 100.0),
+                -180.0,
+                10.0
+                );
+
+            Assert::IsFalse(
+                BotWarz::Strategy::isBotAlignedWithAttackZone(myBot, enemyBot)
+                );
+        }
+
+        TEST_METHOD(TestIsBotAlignedWithAttackZone_EnemyBotIsTurnedInwardsAndCloseEnought)
+        {
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                10.0
+                );
+
+            auto enemyBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(110.0, 100.0),
+                -180.0,
+                180.0/*speed*/
+                );
+
+            Assert::IsTrue(
+                BotWarz::Strategy::isBotAlignedWithAttackZone(myBot, enemyBot)
+                );
+        }
+
         TEST_METHOD(TestIsStuckedNearTheWall)
         {
             auto myBot = std::make_shared<BotWarz::Bot>(

@@ -22,8 +22,7 @@ public:
 
     Application()
         : m_client(SERVER_NAME, SERVER_PORT)
-        , m_FrameTimeSafetyMarginInMiliseconds(5)
-        , m_nNumberOfCommandsWithoutTimeViolation(0)
+        , m_FrameTimeSafetyMarginInMiliseconds(30)
         , m_szInputLogFilename("Logs/in.txt")
         , m_szOutputLogFilename("Logs/out.txt")
     {
@@ -41,16 +40,8 @@ public:
 
     DWORD   GetFrameTime() const
     {
-        return m_RequiredFrameTimeInMiliseconds + 30;
-
-        //DWORD frameTime = m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
-
-        //if (frameTime > 250)
-        //{
-        //    frameTime = 250;
-        //}
-
-        //return frameTime;
+        DWORD frameTime = m_RequiredFrameTimeInMiliseconds + m_FrameTimeSafetyMarginInMiliseconds;
+        return frameTime;
     }
 
 	void Execute(const char *token, const char *player_name)
@@ -101,19 +92,16 @@ public:
                 lastGameUpdateTime = GetTickCount();
 
                 // send command on server
-                std::string szMoveMessage = pGame->GetMove();
-                m_client.Send(szMoveMessage);
-
-                std::cout << " FrameTime: " << GetFrameTime() << " ms " << std::endl;
-                if (m_nNumberOfCommandsWithoutTimeViolation > 20)
+                const char* szMessage = pGame->GetMove();
+                if (szMessage != nullptr)
                 {
-                    m_FrameTimeSafetyMarginInMiliseconds-= 5;
-                    m_nNumberOfCommandsWithoutTimeViolation = 0;
+                    std::string szMoveMessage = szMessage;
+                    m_client.Send(szMoveMessage);
                 }
-                m_nNumberOfCommandsWithoutTimeViolation++;
-
-                //std::cout << "Time: " << timer.getTimeInMilliseconds() << " ms."
-                //    << " - Sending MOVE command.";
+                else
+                {
+                    std::cout << "No commands sent." << std::endl;
+                }
 
                 DWORD end_time = GetTickCount() + GetFrameTime();
 
@@ -132,15 +120,6 @@ public:
 
                         // Penalty. We can not send next command sooner than 200ms from now.
                         end_time = GetTickCount() + GetFrameTime();
-
-                        const unsigned frameSafetyMarginIncrement = 30;
-                        const unsigned minAcceptableNumberOfCommandsWithoutTimeViolation = 200;
-                        if (m_nNumberOfCommandsWithoutTimeViolation < minAcceptableNumberOfCommandsWithoutTimeViolation)
-                        {
-                            m_FrameTimeSafetyMarginInMiliseconds += frameSafetyMarginIncrement;
-                        }
-
-                        m_nNumberOfCommandsWithoutTimeViolation = 0;
                     }
 
                     //if (!json["play"].isNull())
@@ -191,10 +170,6 @@ public:
 
                         break;
                     }
-
-                        //std::cout << "Time: " << timer.getTimeInMilliseconds() << " ms."
-                    //    << " - Game UPDATEd.";
-
 
                     // update wait time and break if 
                     wait_time = end_time - GetTickCount();
@@ -280,5 +255,5 @@ private:
 
     const DWORD m_RequiredFrameTimeInMiliseconds = 200;
     DWORD m_FrameTimeSafetyMarginInMiliseconds;
-    unsigned    m_nNumberOfCommandsWithoutTimeViolation;
+    //unsigned    m_nNumberOfCommandsWithoutTimeViolation;
 };

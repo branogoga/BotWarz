@@ -7,12 +7,14 @@
 #include "BotWarz/Strategy/Interface.h"
 #include "jsoncpp/include/json/json.h"
 
+#include "boost\optional.hpp"
+
 #include <string>
 #include <vector>
 
 namespace Message
 {
-    std::string MoveBots(
+    boost::optional<std::string> MoveBots(
         const std::shared_ptr<BotWarz::Game>& i_pGame,
         const std::shared_ptr<BotWarz::Strategy::Interface> i_pGameStrategy
         )
@@ -23,6 +25,16 @@ namespace Message
 
         // our tactics is to crush enemies before they notice something...
         auto commands = i_pGameStrategy->getCommands(i_pGame->getMyPlayer(), i_pGame->getOtherPlayer());
+
+        // If there are no commands ...
+        if (commands.size() == 0)
+        {
+            return boost::none;
+        }
+
+        // Invariant:
+        //  There are some commands ...
+        assert(commands.size() > 0);
 
         // serialize to Json
         Json::Value root;

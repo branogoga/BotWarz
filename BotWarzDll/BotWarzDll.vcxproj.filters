@@ -59,6 +59,15 @@
       <Filter>BotWarz\Strategy</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Geometry\Line.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Vector.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWarz\Strategy\NoCommands.h">
+      <Filter>BotWarz\Strategy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BotWarzDll.cpp" />
@@ -104,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="BotWarz\Strategy\Strategy.cpp">
       <Filter>BotWarz\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Line.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Vector.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

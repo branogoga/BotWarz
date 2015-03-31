@@ -56,6 +56,11 @@ namespace BotWarz {
             double i_dBotRadius
             );
 
+        TESTABLE bool   isBotAlignedWithAttackZone(
+            const std::shared_ptr<BotWarz::Bot> i_pBot1,
+            const std::shared_ptr<BotWarz::Bot> i_pBot2
+            );
+
         class TESTABLE FindEnemyBotPolicyInterface
         {
         public:
