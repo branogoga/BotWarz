@@ -352,6 +352,85 @@ namespace BotWarzTest
             }
         }
 
+        TEST_METHOD(TestNumberOfStepsToReachPoint)
+        {
+            auto vSpeedLevels = createSpeedLevels();
+
+            auto myBot = std::make_shared<BotWarz::Bot>(
+                0,
+                Geometry::Point(100.0, 100.0),
+                0.0,
+                BotWarz::getMinimalSpeed(vSpeedLevels)
+                );
+
+            {
+                myBot->setAngleInDegrees(0.0);
+                myBot->setSpeed(BotWarz::getMinimalSpeed(vSpeedLevels));
+
+                Assert::AreEqual(
+                    (unsigned)0,
+                    BotWarz::Strategy::numberOfStepsToReachPoint(
+                    myBot, Geometry::Point(100.0, 100.0), vSpeedLevels, 200.0
+                    )
+                    );
+            }
+
+            {
+                myBot->setAngleInDegrees(0.0);
+                myBot->setSpeed(BotWarz::getMinimalSpeed(vSpeedLevels));
+
+                // 200.0, accelerate, (102.0, 100.0), 10.0 -> 30.0
+                // 400.0, accelerate, (108.0, 100.0), 30.0 -> 90.0
+                // 600.0, accelerate, (108.0, 100.0), 30.0 -> 90.0
+                Assert::AreEqual(
+                    (unsigned)3,
+                    BotWarz::Strategy::numberOfStepsToReachPoint(
+                    myBot, Geometry::Point(110.0, 100.0), vSpeedLevels, 200.0
+                    )
+                    );
+            }
+
+            {
+                myBot->setAngleInDegrees(90.0);
+                myBot->setSpeed(BotWarz::getMinimalSpeed(vSpeedLevels));
+
+                // 200.0, steer -30.0, ignore movement, rotation: 90.0 -> 60.0
+                // 400.0, steer -30.0, ignore movement, rotation: 60.0 -> 30.0
+                // 600.0, steer -30.0, ignore movement, rotation: 30.0 -> 0.0
+                // 800.0, accelerate, (102.0, 100.0), speed: 10.0 -> 30.0
+                // 1000.0, accelerate, (108.0, 100.0), speed: 30.0 -> 90.0
+                // 1200.0, accelerate, (108.0, 100.0), speed: 30.0 -> 90.0
+                Assert::AreEqual(
+                    (unsigned)6,
+                    BotWarz::Strategy::numberOfStepsToReachPoint(
+                    myBot, Geometry::Point(110.0, 100.0), vSpeedLevels, 200.0
+                    )
+                    );
+            }
+
+            {
+                myBot->setAngleInDegrees(180.0);
+                myBot->setSpeed(BotWarz::getMaximalSpeed(vSpeedLevels));
+
+            //    // brake, ignore movement, speed: 360.0 -> 180.0
+            //    // brake, ignore movement, speed: 180.0 -> 90.0
+            //    // brake, ignore movement, speed: 90.0 -> 30.0
+            //    // brake, ignore movement, speed: 30.0 -> 10.0
+            //    // 200.0, steer -30.0, ignore movement, rotation: 90.0 -> 60.0
+            //    // 400.0, steer -30.0, ignore movement, rotation: 60.0 -> 30.0
+            //    // 600.0, steer -30.0, ignore movement, rotation: 30.0 -> 0.0
+            //    // 800.0, accelerate, (102.0, 100.0), speed: 10.0 -> 30.0
+            //    // 1000.0, accelerate, (108.0, 100.0), speed: 30.0 -> 90.0
+            //    // 1200.0, accelerate, (108.0, 100.0), speed: 30.0 -> 90.0
+            //    Assert::AreEqual(
+            //        (unsigned)10,
+            //        BotWarz::Strategy::numberOfStepsToReachPoint(
+            //        myBot, Geometry::Point(110.0, 100.0), vSpeedLevels, 200.0
+            //        )
+            //        );
+            }
+        }
+
         TEST_METHOD(TestFindMostReachableBotPolicy)
         {
             std::vector<std::shared_ptr<BotWarz::Bot>>   vBots;
@@ -360,15 +439,17 @@ namespace BotWarzTest
             vBots.push_back(std::make_shared<BotWarz::Bot>(3, Geometry::Point(200.0, 200.0)));
             vBots.push_back(std::make_shared<BotWarz::Bot>(4, Geometry::Point(100.0, 200.0)));
 
+            auto vSpeedLevels = createSpeedLevels();
+
             BotWarz::Strategy::FindMostReachableBotPolicy botFinder(
-                createSpeedLevels()
+                vSpeedLevels
                 );
 
             auto myBot = std::make_shared<BotWarz::Bot>(
                 0,
                 Geometry::Point(0.0, 0.0),
                 0.0,
-                10.0
+                BotWarz::getMinimalSpeed(vSpeedLevels)
                 );
 
             myBot->setPosition(Geometry::Point(150.0, 100.0));
