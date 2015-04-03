@@ -2,6 +2,7 @@
 #include "./Strategy.h"
 
 #include "BotWarz/Bot.h"
+#include "BotWarz/Game.h"
 #include "BotWarz/Player.h"
 #include "BotWarz/SpeedLevel.h"
 #include "BotWarz/World.h"
@@ -30,8 +31,8 @@ namespace BotWarz {
             , m_pLogger(i_pLogger)
         {
             m_enemyBotFinderPolicy = 
-                //(std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
-                (std::make_unique<Strategy::FindClosestBotPolicy>());
+                (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+                //(std::make_unique<Strategy::FindClosestBotPolicy>());
 
             m_chasingStrategyPolicy =
                 std::make_unique<CurrentPositionChasingPolicy>();
@@ -153,205 +154,163 @@ namespace BotWarz {
                 size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
                 const std::shared_ptr<Bot> closestEnemyBot = vEnemyBots[closestEnemyBotIndex];
 
-                if (m_pLogger)
-                {
-                    *m_pLogger << " Bot # " << myBot->getId() << " attacking enemy # " << closestEnemyBot->getId() << std::endl;
-                }
-
-                // Calculate chasing target point
-                Geometry::Point targetPosition = m_chasingStrategyPolicy->getDestinationPoint(closestEnemyBot);
-
-                // Calculate distance and angle
-                double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
-                double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
-
-                if (m_pLogger)
-                {
-                    *m_pLogger << " Angle from current to enemy: " << dChangeInAngleInDegrees << std::endl;
-                }
-
-                //
-                // If stuck near wall, change the angle and accelerate
-                //
-                if (Strategy::isStuckedNearTheWall(
-                    myBot, m_pWorld, m_vSpeedLevels, m_dBotRadius
-                    ))
-                {
-                    if (m_pLogger)
-                    {
-                        *m_pLogger << " Bot #" << myBot->getId() << " is stucked near the wall." << std::endl;
-                    }
-
-                    // Turned to the wall
-                    int sign = (dChangeInAngleInDegrees >= 0.0) ? +1 : -1;
-
-                    double dAngle = sign * getMaxAngularSpeed(
-                        m_vSpeedLevels,
-                        getMinimalSpeed(m_vSpeedLevels)
-                        );
-
-                    if (m_pLogger)
-                    {
-                        *m_pLogger << " Steer " << dAngle << " degrees." << std::endl;
-                    }
-
-                    vCommands.push_back(
-                        std::make_shared<Command::Steer>(
-                            myBot,
-                            dAngle  
-                        )
-                        );
-                    continue;
-                }
-
-                //if (myBot->getSpeed() < getMinimalSpeed(m_vSpeedLevels))
-                //{
-                //    std::cout << " Accelerate!" << std::endl;
-                //    vCommands.push_back(
-                //        std::make_shared<Command::Accelerate>(
-                //        myBot,
-                //        m_vSpeedLevels
-                //        )
-                //        );
-                //    continue;
-                //}
-
-                ////
-                //// Avoid collisions with own Bots
-                ////
-                //for each(auto bot in pMyPlayer->getBots())
-                //{
-                //    if (bot->getId() != myBot->getId())
-                //    {
-                //        const double dTimeDelta = 500.0;
-                //        if (isCollisionExpected(*bot, *myBot, dTimeDelta))
-                //        {
-                //            std::cout << "Possible collision of bot #" << bot->getId() << "with own bot #" << myBot->getId() << "!";
-
-                //            const Geometry::Point bot1_start = bot->getPosition();
-                //            const Geometry::Point bot1_end = bot->getFuturePosition(dTimeDelta);
-                //            const Geometry::Point bot2_start = myBot->getPosition();
-                //            const Geometry::Point bot2_end = myBot->getFuturePosition(dTimeDelta);
-
-                //            double dOrientedAngle = Geometry::lineAngleInDegrees(bot1_start, bot1_end, bot2_start, bot2_end);
-                //            //double sign = (fabs(dOrientedAngle) > 90.0) ? -1.0 : +1.0;
-                //            double sign = (rand() % 2 == 0) ? -1.0 : +1.0;
-
-                //            double dAngle = sign * getMaxAngularSpeed(m_vSpeedLevels, myBot->getSpeed());
-                //            std::cout << "Steer! (" << dAngle << " degrees )" << std::endl;
-                //            vCommands.push_back(
-                //                std::make_shared<Command::Steer>(myBot, dAngle)
-                //                );
-
-                //            continue;
-                //        }
-                //    }
-                //}
-
-                //
-                // Avoid own static Bot collisions
-                //
-                std::shared_ptr<Command::Interface> pAvoidCollisionCommand =
-                    avoidStaticBotCollisions(
-                    myBot, closestEnemyBot, vMyBots, m_dBotRadius, m_vSpeedLevels, m_pLogger
-                    );
-                if (pAvoidCollisionCommand)
-                {
-                    vCommands.push_back(pAvoidCollisionCommand);
-                    continue;
-                }
-
-                //
-                // Attack!
-                //
-
-                // Achieve to Bots were aligned in attack position in given time
-                //double dAttackTimeInseconds = 0.5;
-
-                //double dMySpeed = __max(myBot->getSpeed(), getMinimalSpeed(m_vSpeedLevels));
-                //double dEnemySpeed = __max(closestEnemyBot->getSpeed(), getMinimalSpeed(m_vSpeedLevels));
-
-                double dDistanceToTarget = Geometry::distance(targetPosition, myBot->getPosition());
-                const double dMaxAttackAngle = calculateMaxAttackAngleInDegrees(
-                    m_dBotRadius,
-                    //(dMySpeed + dEnemySpeed / 2.0) * dAttackTimeInseconds
-                    dDistanceToTarget
+                std::shared_ptr<Command::Interface>    pCommand = chaseBot(
+                    myBot,
+                    closestEnemyBot,
+                    pMyPlayer,
+                    m_pLogger
                     );
 
-                if (m_pLogger)
+                if (pCommand != nullptr)
                 {
-                    *m_pLogger << " Max attack angle = " << dMaxAttackAngle << std::endl;
+                    vCommands.push_back( pCommand );
                 }
-
-                bool isAlignedInAttackPosition = fabs(dChangeInAngleInDegrees) < dMaxAttackAngle;
-                if (isAlignedInAttackPosition
-                    && (!isMaximalSpeed(m_vSpeedLevels,myBot->getSpeed())))
-                {
-                    // If enemy Bot is turned in attack position and is close enought, do not send any command.
-                    // Rather save time, wait for collision and react sooner in next round, so possibly can won 
-                    // the next match.
-                    if (Strategy::isBotAlignedWithAttackZone(myBot, closestEnemyBot))
-                    {
-                        continue;
-                    }
-
-                    if (m_pLogger)
-                    {
-                        *m_pLogger << " Aligned in attack position. Accelerate!" << std::endl;
-                    }
-
-                    vCommands.push_back(
-                        std::make_shared<Command::Accelerate>(
-                        myBot,
-                        m_vSpeedLevels
-                        )
-                        );
-                    continue;
-                }
-
-                bool bCanSteer = canSteerAngleAtGivenSpeed(
-                    dChangeInAngleInDegrees,
-                    myBot->getSpeed(),
-                    closestEnemyBot->getSpeed(),
-                    dDistanceToTarget,
-                    m_vSpeedLevels
-                    );
-
-                if (m_pLogger)
-                {
-                    *m_pLogger << " Distance to target = " << dDistanceToTarget << std::endl;
-                }
-
-                if (!bCanSteer
-                    && !isMinimalSpeed(m_vSpeedLevels, myBot->getSpeed())
-                    && (myBot->getSpeed() > getMinimalSpeed(m_vSpeedLevels)) // Stucked near the wall
-                    )
-                {
-                    if (m_pLogger)
-                    {
-                        *m_pLogger << " Can`t steer at this speed. Brake." << std::endl;
-                    }
-
-                    vCommands.push_back(
-                        std::make_shared<Command::Brake>(
-                            myBot,
-                            m_vSpeedLevels
-                            )
-                        );
-                    continue;
-                }
-
-                if (m_pLogger)
-                {
-                    *m_pLogger << " Steer " << dChangeInAngleInDegrees << "degrees." << std::endl;
-                }
-
-                vCommands.push_back(
-                    std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees)
-                    );
             }
 
             return vCommands;
+        }
+
+        std::shared_ptr<Command::Interface> AttackClosestBot::chaseBot(
+            std::shared_ptr<Bot> myBot,
+            std::shared_ptr<Bot> enemyBot,
+            const std::shared_ptr<Player> i_pMyPlayer,
+            std::shared_ptr<Logger> pLogger
+            )
+        {
+            if (pLogger)
+            {
+                *pLogger << " Bot # " << myBot->getId() << " attacking enemy # " << enemyBot->getId() << std::endl;
+            }
+
+            // Calculate chasing target point
+            Geometry::Point targetPosition = m_chasingStrategyPolicy->getDestinationPoint(enemyBot);
+
+            // Calculate distance and angle
+            double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
+            double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
+
+            if (pLogger)
+            {
+                *pLogger << " Angle from current to enemy: " << dChangeInAngleInDegrees << std::endl;
+            }
+
+            //
+            // If stuck near wall, change the angle and accelerate
+            //
+            if (Strategy::isStuckedNearTheWall(
+                myBot, m_pWorld, m_vSpeedLevels, m_dBotRadius
+                ))
+            {
+                if (pLogger)
+                {
+                    *pLogger << " Bot #" << myBot->getId() << " is stucked near the wall." << std::endl;
+                }
+
+                // Turned to the wall
+                int sign = (dChangeInAngleInDegrees >= 0.0) ? +1 : -1;
+
+                double dAngle = sign * getMaxAngularSpeed(
+                    m_vSpeedLevels,
+                    getMinimalSpeed(m_vSpeedLevels)
+                    );
+
+                if (pLogger)
+                {
+                    *pLogger << " Steer " << dAngle << " degrees." << std::endl;
+                }
+
+                return std::make_shared<Command::Steer>(
+                    myBot,
+                    dAngle
+                    );
+            }
+
+            //
+            // Avoid own static Bot collisions
+            //
+            std::shared_ptr<Command::Interface> pAvoidCollisionCommand =
+                avoidStaticBotCollisions(
+                myBot, enemyBot, i_pMyPlayer->getBots(), m_dBotRadius, m_vSpeedLevels, m_pLogger
+                );
+            if (pAvoidCollisionCommand)
+            {
+                return pAvoidCollisionCommand;
+            }
+
+            //
+            // Attack!
+            //
+
+            // Achieve to Bots were aligned in attack position in given time
+            double dDistanceToTarget = Geometry::distance(targetPosition, myBot->getPosition());
+            const double dMaxAttackAngle = calculateMaxAttackAngleInDegrees(
+                m_dBotRadius,
+                dDistanceToTarget
+                );
+
+            if (pLogger)
+            {
+                *pLogger << " Max attack angle = " << dMaxAttackAngle << std::endl;
+            }
+
+            bool isAlignedInAttackPosition = fabs(dChangeInAngleInDegrees) < dMaxAttackAngle;
+            if (isAlignedInAttackPosition
+                && (!isMaximalSpeed(m_vSpeedLevels, myBot->getSpeed())))
+            {
+                // If enemy Bot is turned in attack position and is close enought, do not send any command.
+                // Rather save time, wait for collision and react sooner in next round, so possibly can won 
+                // the next match.
+                if (Strategy::isBotAlignedWithAttackZone(myBot, enemyBot))
+                {
+                    return nullptr;
+                }
+
+                if (pLogger)
+                {
+                    *pLogger << " Aligned in attack position. Accelerate!" << std::endl;
+                }
+
+                return std::make_shared<Command::Accelerate>(
+                    myBot,
+                    m_vSpeedLevels
+                    );
+            }
+
+            bool bCanSteer = canSteerAngleAtGivenSpeed(
+                dChangeInAngleInDegrees,
+                myBot->getSpeed(),
+                enemyBot->getSpeed(),
+                dDistanceToTarget,
+                m_vSpeedLevels
+                );
+
+            if (pLogger)
+            {
+                *pLogger << " Distance to target = " << dDistanceToTarget << std::endl;
+            }
+
+            if (!bCanSteer
+                && !isMinimalSpeed(m_vSpeedLevels, myBot->getSpeed())
+                && (myBot->getSpeed() > getMinimalSpeed(m_vSpeedLevels)) // Stucked near the wall
+                )
+            {
+                if (pLogger)
+                {
+                    *pLogger << " Can`t steer at this speed. Brake." << std::endl;
+                }
+
+                return std::make_shared<Command::Brake>(
+                    myBot,
+                    m_vSpeedLevels
+                    );
+            }
+
+            if (pLogger)
+            {
+                *pLogger << " Steer " << dChangeInAngleInDegrees << "degrees." << std::endl;
+            }
+
+            return std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees);
         }
 
         std::string AttackClosestBot::getName() const

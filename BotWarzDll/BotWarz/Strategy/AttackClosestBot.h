@@ -14,6 +14,8 @@ class Logger;
 
 namespace BotWarz {
 
+    class Bot;
+    class Game;
     class SpeedLevel;
     class World;
 
@@ -45,6 +47,13 @@ namespace BotWarz {
         private:
             std::unique_ptr<Strategy::FindEnemyBotPolicyInterface>  m_enemyBotFinderPolicy;
             std::unique_ptr<ChasingPolicyInterface> m_chasingStrategyPolicy;
+
+            std::shared_ptr<Command::Interface> chaseBot(
+                std::shared_ptr<Bot> myBot,
+                std::shared_ptr<Bot> enemyBot,
+                const std::shared_ptr<Player> i_pMyPlayer,
+                std::shared_ptr<Logger> pLogger = nullptr
+                );
 
             const std::vector<SpeedLevel>&  m_vSpeedLevels;
             const double m_dBotRadius;
