@@ -8,6 +8,7 @@
 #include "World.h"
 
 #include <algorithm>
+#include <assert.h>
 #include <memory>
 
 namespace BotWarz
@@ -76,7 +77,7 @@ namespace BotWarz
     }
 
 
-    std::shared_ptr<BotWarz::Bot>    GameFactory::createBot(const Json::Value& jsonBot)
+    std::shared_ptr<BotWarz::Bot>    GameFactory::createBot(const Json::Value& jsonBot, const std::vector<SpeedLevel>& vSpeedLevels)
     {
         const char* jsonKeyBotId = "id";
         const char* jsonKeyBotPositionX = "x";
@@ -92,7 +93,9 @@ namespace BotWarz
             )
             );
         bot->setAngleInDegrees(jsonBot[jsonKeyBotAngle].asDouble());
-        bot->setSpeed(jsonBot[jsonKeyBotSpeed].asDouble());
+
+        double speed = jsonBot[jsonKeyBotSpeed].asDouble();
+        bot->setSpeed(getClosestValidSpeed(speed, vSpeedLevels));
 
         return bot;
     }
@@ -103,7 +106,7 @@ namespace BotWarz
         return jsonPlayer[jsonKeyPlayerNickName].asString() == m_szNickName;
     }
 
-    std::shared_ptr<BotWarz::Player>    GameFactory::createPlayer(const Json::Value& jsonPlayer)
+    std::shared_ptr<BotWarz::Player>    GameFactory::createPlayer(const Json::Value& jsonPlayer, const std::vector<SpeedLevel>& vSpeedLevels)
     {
         const char* jsonKeyPlayerNickName = "nickname";
         const char* jsonKeyPlayerBots = "bots";
@@ -113,7 +116,7 @@ namespace BotWarz
             );
 
         pPlayer->setBots(
-            createBots(jsonPlayer[jsonKeyPlayerBots])
+            createBots(jsonPlayer[jsonKeyPlayerBots],vSpeedLevels)
             );
 
         return pPlayer;
@@ -145,7 +148,7 @@ namespace BotWarz
         Json::Value jsonPlayers = jsonGame[jsonKeyPlayers];
         for each(auto jsonPlayer in jsonPlayers)
         {
-            auto pPlayer = createPlayer(jsonPlayer);
+            auto pPlayer = createPlayer(jsonPlayer,vSpeedLevels);
             if (isMyPlayer(jsonPlayer))
             {
                 pGame->setMyPlayer(pPlayer);
@@ -160,13 +163,13 @@ namespace BotWarz
     }
 
 
-    std::vector<std::shared_ptr<BotWarz::Bot>>   GameFactory::createBots(const Json::Value& jsonBots)
+    std::vector<std::shared_ptr<BotWarz::Bot>>   GameFactory::createBots(const Json::Value& jsonBots, const std::vector<SpeedLevel>& vSpeedLevels)
     {
         std::vector<std::shared_ptr<BotWarz::Bot>>   vBots;
         for each (auto  jsonBot in jsonBots)
         {
             vBots.push_back(
-                createBot(jsonBot)
+                createBot(jsonBot,vSpeedLevels)
                 );
         }
 

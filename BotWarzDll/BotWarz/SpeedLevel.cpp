@@ -126,19 +126,46 @@ namespace BotWarz {
             const std::vector<SpeedLevel>& i_vSpeedLevel
             )
         {
-            std::vector<SpeedLevel>::const_iterator   it = i_vSpeedLevel.begin();
-            while (it != i_vSpeedLevel.end())
+            for (auto it = i_vSpeedLevel.begin(); it != i_vSpeedLevel.end(); it++)
             {
                 if (it->getSpeed() == i_dCurrentSpeed)
                 {
                     return it;
                 }
-                it++;
             }
 
             // Not found.
             return i_vSpeedLevel.end();
         }
+    }
+
+    TESTABLE bool isSpeedValid(
+        double dSpeed,
+        const std::vector<SpeedLevel>& vSpeedLevels
+        )
+    {
+        return findSpeed(dSpeed, vSpeedLevels) != vSpeedLevels.end();
+    }
+
+    TESTABLE double getClosestValidSpeed(
+        double i_dSpeed,
+        const std::vector<SpeedLevel>& i_vSpeedLevels
+        )
+    {
+        double  dClosestDistance = DBL_MAX;
+        double  dClosestSpeed = i_dSpeed;
+
+        for (auto speedLevel : i_vSpeedLevels)
+        {
+            double distance = fabs(i_dSpeed - speedLevel.getSpeed());
+            if (distance < dClosestDistance)
+            {
+                dClosestDistance = distance;
+                dClosestSpeed = speedLevel.getSpeed();
+            }
+        }
+
+        return dClosestSpeed;
     }
 
     double accelerate(

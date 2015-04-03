@@ -87,22 +87,22 @@ namespace BotWarz
             {
                 if (isMyPlayer(jsonPlayer))
                 {
-                    UpdatePlayer(m_pGame->getMyPlayer(), jsonPlayer);
+                    UpdatePlayer(m_pGame->getMyPlayer(), jsonPlayer, m_pGame->getSpeedLevels());
                 }
                 else
                 {
-                    UpdatePlayer(m_pGame->getOtherPlayer(), jsonPlayer);
+                    UpdatePlayer(m_pGame->getOtherPlayer(), jsonPlayer, m_pGame->getSpeedLevels());
                 }
             }
         }
 
-        void    UpdatePlayer(std::shared_ptr<BotWarz::Player> io_pPlayer, const Json::Value& jsonPlayer)
+        void    UpdatePlayer(std::shared_ptr<BotWarz::Player> io_pPlayer, const Json::Value& jsonPlayer, const std::vector<SpeedLevel>& vSpeedLevels)
         {
             const char* jsonKeyBots = "bots";
             Json::Value jsonBots = jsonPlayer[jsonKeyBots];
 
             BotWarz::GameFactory    gameFactory(m_szNickName);
-            auto vBots = gameFactory.createBots(jsonBots);
+            auto vBots = gameFactory.createBots(jsonBots,vSpeedLevels);
 
             if (vBots.size() == 0)
             {

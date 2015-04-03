@@ -30,8 +30,8 @@ namespace BotWarz {
             , m_pLogger(i_pLogger)
         {
             m_enemyBotFinderPolicy = 
-                (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
-                //(std::make_unique<Strategy::FindClosestBotPolicy>());
+                //(std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+                (std::make_unique<Strategy::FindClosestBotPolicy>());
 
             m_chasingStrategyPolicy =
                 std::make_unique<CurrentPositionChasingPolicy>();

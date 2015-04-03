@@ -23,6 +23,16 @@ namespace BotWarz {
         double    m_dMaxAngularSpeed;
     };
 
+    TESTABLE bool isSpeedValid(
+        double dSpeed,
+        const std::vector<SpeedLevel>& vSpeedLevels
+        );
+
+    TESTABLE double getClosestValidSpeed(
+        double dSpeed,
+        const std::vector<SpeedLevel>& vSpeedLevels
+        );
+
     TESTABLE double  getMaxAngularSpeed(
         const std::vector<SpeedLevel>& vSpeedLevels,
         double i_dSpeed
