@@ -13,6 +13,8 @@
 #include "Geometry/Line.h"
 #include "Logger.h"
 
+#include <boost/random/uniform_int_distribution.hpp>
+
 #include <assert.h>
 
 namespace BotWarz {
@@ -112,7 +114,8 @@ namespace BotWarz {
 
                             return std::make_shared<Command::Steer>(
                                 myBot,
-                                dAngle
+                                dAngle,
+                                vSpeedLevels
                             );
                         }
                         else
@@ -151,7 +154,8 @@ namespace BotWarz {
                 //
                 const std::vector<std::shared_ptr<Bot>>& vEnemyBots = pOtherPlayer->getBots();
 
-                size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
+                //size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
+                size_t  closestEnemyBotIndex = getClosestEnemyBotIndex(myBot,vEnemyBots,pMyPlayer,m_dBotRadius);
                 const std::shared_ptr<Bot> closestEnemyBot = vEnemyBots[closestEnemyBotIndex];
 
                 std::shared_ptr<Command::Interface>    pCommand = chaseBot(
@@ -171,11 +175,11 @@ namespace BotWarz {
         }
 
         std::shared_ptr<Command::Interface> AttackClosestBot::chaseBot(
-            std::shared_ptr<Bot> myBot,
-            std::shared_ptr<Bot> enemyBot,
+            const std::shared_ptr<Bot> myBot,
+            const std::shared_ptr<Bot> enemyBot,
             const std::shared_ptr<Player> i_pMyPlayer,
             std::shared_ptr<Logger> pLogger
-            )
+            ) const
         {
             if (pLogger)
             {
@@ -221,7 +225,8 @@ namespace BotWarz {
 
                 return std::make_shared<Command::Steer>(
                     myBot,
-                    dAngle
+                    dAngle,
+                    m_vSpeedLevels
                     );
             }
 
@@ -310,7 +315,94 @@ namespace BotWarz {
                 *pLogger << " Steer " << dChangeInAngleInDegrees << "degrees." << std::endl;
             }
 
-            return std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees);
+            return std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees,m_vSpeedLevels);
+        }
+
+        unsigned AttackClosestBot::getNumberOfStepsToChaseEnemyBot(
+            const std::shared_ptr<Bot> i_pMyBot,
+            const std::shared_ptr<Bot> i_pEnemyBot,
+            const std::shared_ptr<Player> i_pMyPlayer,
+            double i_dBotRadius
+            ) const
+        {
+            const unsigned maxNumberOfSteps = 100;
+            const double dTimeStepInMilliseconds = 230.0;
+
+            auto myBot = std::make_shared<Bot>(*i_pMyBot);
+            auto enemyBot = std::make_shared<Bot>(*i_pEnemyBot);
+
+            unsigned nNumberOfSteps = 0;
+            while( (nNumberOfSteps < maxNumberOfSteps) 
+                && distance(myBot->getPosition(), enemyBot->getPosition()) > 2*i_dBotRadius
+                )
+            {
+                auto pCommand = chaseBot(myBot,enemyBot,i_pMyPlayer);
+                if (pCommand)
+                {
+                    pCommand->apply();
+                }
+
+                myBot->setPosition(
+                    myBot->getFuturePosition(dTimeStepInMilliseconds)
+                    );
+
+                //
+                // Do not update enemy bot. We can not guess his strategy.
+                //
+
+                nNumberOfSteps++;
+            }
+
+            return nNumberOfSteps;
+        }
+
+        size_t AttackClosestBot::getClosestEnemyBotIndex(
+            const std::shared_ptr<Bot> i_pMyBot,
+            const std::vector<std::shared_ptr<Bot>> i_vEnemyBots,
+            const std::shared_ptr<Player> i_pMyPlayer,
+            double i_dBotRadius
+            ) const
+        {
+            unsigned nMinimalNumberOfStepsToReachBot = INT32_MAX;
+            std::vector<size_t> vIndexesWithMinimalStepsToReachBot;
+            unsigned nIndex = 0;
+            for each(auto bot in i_vEnemyBots)
+            {
+                unsigned numberOfStepsToBot = getNumberOfStepsToChaseEnemyBot(
+                    i_pMyBot,
+                    bot,
+                    i_pMyPlayer,
+                    i_dBotRadius
+                    );
+                if (numberOfStepsToBot <= nMinimalNumberOfStepsToReachBot)
+                {
+                    if (numberOfStepsToBot < nMinimalNumberOfStepsToReachBot)
+                    {
+                        // Clear already obtained bots, if we have some closer.
+                        vIndexesWithMinimalStepsToReachBot.clear();
+                    }
+
+                    nMinimalNumberOfStepsToReachBot = numberOfStepsToBot;
+                    vIndexesWithMinimalStepsToReachBot.push_back(nIndex);
+                }
+                nIndex++;
+            }
+
+            unsigned nNumberOfClosestBots = vIndexesWithMinimalStepsToReachBot.size();
+            if (nNumberOfClosestBots == 0)
+            {
+                throw std::logic_error("No Bot is closest one.");
+            }
+
+            unsigned nReturnedIndex = 0;
+            if (nNumberOfClosestBots > 1)
+            {
+                nReturnedIndex = ((nNumberOfClosestBots-1)*rand() / RAND_MAX);
+                assert(nReturnedIndex >= 0);
+                assert(nReturnedIndex < nNumberOfClosestBots);
+            }
+
+            return (size_t)vIndexesWithMinimalStepsToReachBot[nReturnedIndex];
         }
 
         std::string AttackClosestBot::getName() const

@@ -29,6 +29,15 @@
     <ClCompile Include="Geometry\AngleTest.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="BotWarz\Command\AccelerateTest.cpp">
+      <Filter>BotWarz\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Command\BrakeTest.cpp">
+      <Filter>BotWarz\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="BotWarz\Command\SteerTest.cpp">
+      <Filter>BotWarz\Command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Geometry">

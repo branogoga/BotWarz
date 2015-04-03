@@ -89,6 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BotWarz\BotTest.cpp" />
+    <ClCompile Include="BotWarz\Command\AccelerateTest.cpp" />
+    <ClCompile Include="BotWarz\Command\BrakeTest.cpp" />
+    <ClCompile Include="BotWarz\Command\SteerTest.cpp" />
     <ClCompile Include="BotWarz\SpeedLevelTest.cpp" />
     <ClCompile Include="BotWarz\Strategy\AttackClosestBotTest.cpp" />
     <ClCompile Include="BotWarz\Strategy\StrategyTest.cpp" />

@@ -28,13 +28,13 @@ namespace BotWarzTest
                 );
 
             auto    command = std::make_shared<BotWarz::Command::Accelerate>(
-                bot->getId()
+                bot, vSpeedLevels
                 );
 
-            apply(bot, command, vSpeedLevels);
+            command->apply();
             Assert::AreEqual(10.0, bot->getSpeed());
 
-            apply(bot, command, vSpeedLevels);
+            command->apply();
             Assert::AreEqual(20.0, bot->getSpeed());
         }
 

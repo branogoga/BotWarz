@@ -807,7 +807,7 @@ namespace BotWarzTest
             Assert::IsTrue(pSteerCommand != nullptr);
 
             Assert::AreEqual(
-                -28.42,
+                -92.4037,
                 pSteerCommand->getAngle(),
                 1E-02
                 );
@@ -961,6 +961,133 @@ namespace BotWarzTest
                 (unsigned)0,
                 (unsigned)vCommands.size()
                 );
+        }
+
+        TEST_METHOD(TestNumberOfStepsToChaseEnemyBot_TouchingBots)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                180.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(140.0, 100.0),
+                180,
+                180
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            unsigned nNumberOfStepsToChaseEnemy = strategy->getNumberOfStepsToChaseEnemyBot(
+                vMyBots[0],
+                vEnemyBots[0],
+                myPlayer,
+                20.0
+                );
+
+            Assert::AreEqual((unsigned)0, nNumberOfStepsToChaseEnemy);
+        }
+
+        TEST_METHOD(TestNumberOfStepsToChaseEnemyBot_InFrontOfMe)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                10.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            unsigned nNumberOfStepsToChaseEnemy = strategy->getNumberOfStepsToChaseEnemyBot(
+                vMyBots[0],
+                vEnemyBots[0],
+                myPlayer,
+                20.0
+                );
+
+            Assert::AreEqual((unsigned)2, nNumberOfStepsToChaseEnemy);
+        }
+
+
+        TEST_METHOD(TestNumberOfStepsToChaseEnemyBot_BreakRotateMove)
+        {
+            auto strategy = createStrategy();
+
+            unsigned nBotId = 1;
+
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                90,
+                90.0
+                )
+                );
+
+            auto myPlayer = createPlayer("My", vMyBots);
+
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(450.0, 100.0),
+                0,
+                10
+                )
+                );
+
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+
+            unsigned nNumberOfStepsToChaseEnemy = strategy->getNumberOfStepsToChaseEnemyBot(
+                vMyBots[0],
+                vEnemyBots[0],
+                myPlayer,
+                20.0
+                );
+
+            Assert::AreEqual((unsigned)5, nNumberOfStepsToChaseEnemy);
         }
 
     private:

@@ -3,8 +3,8 @@
 #include "./Base.h"
 #include "Geometry/Angle.h"
 
-//#pragma warning(push)
-//#pragma warning(disable: 4251 /* Shared_ptr going across Dll (Test) */ )
+#pragma warning(push)
+#pragma warning(disable: 4251 /* Shared_ptr going across Dll (Test) */ )
 
 namespace BotWarz {
     namespace Command {
@@ -13,9 +13,10 @@ namespace BotWarz {
         {
         public:
 
-            Steer(std::shared_ptr<Bot> i_pBot, double i_dAngle)
+            Steer(std::shared_ptr<Bot> i_pBot, double i_dAngle, const std::vector<SpeedLevel>& i_vSpeedLevels)
                 : Base(i_pBot)
                 , m_dAngle(i_dAngle)
+                , m_vSpeedLevels(i_vSpeedLevels)
             {
             }
 
@@ -30,9 +31,14 @@ namespace BotWarz {
 
             void    apply()
             {
+                double dAngleToApply = __min(
+                    this->getAngle(),
+                    getMaxAngularSpeed(m_vSpeedLevels, m_pBot->getSpeed())
+                    );
+
                 m_pBot->setAngleInDegrees(
                     Geometry::normalizeAngleInDegrees(
-                        m_pBot->getAngleInDegrees() + this->getAngle()
+                        m_pBot->getAngleInDegrees() + dAngleToApply
                     )
                     );
             }
@@ -59,6 +65,7 @@ namespace BotWarz {
 
         private:
             double  m_dAngle;
+            std::vector<SpeedLevel> m_vSpeedLevels;
         };
 
     }//namespace Command
