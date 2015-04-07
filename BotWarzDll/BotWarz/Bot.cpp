@@ -94,6 +94,16 @@ double      Bot::getSpeed() const
     return m_dSpeed;
 }
 
+unsigned    Bot::getChasedBotId() const
+{
+    return m_nChasedBotId;
+}
+
+void        Bot::setChasedBotId(unsigned i_ChasedBotId)
+{
+    m_nChasedBotId = i_ChasedBotId;
+}
+
 std::ostream& operator << (std::ostream& out, const BotWarz::Bot& bot)
 {
     out << " id = " << bot.getId()

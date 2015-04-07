@@ -38,16 +38,17 @@ namespace BotWarz {
         double      getSpeed() const;
         void        setSpeed(double i_dSpeed);
 
+        unsigned    getChasedBotId() const;
+        void        setChasedBotId(unsigned i_ChasedBotId);
 
     private:
         unsigned    m_nId;
         Geometry::Point m_Position;
         double      m_dAngleInDegrees;
         double      m_dSpeed;
+        unsigned    m_nChasedBotId;
     };
 
 }
 
 std::ostream& operator << (std::ostream& out, const BotWarz::Bot& bot);
-
-

@@ -2,6 +2,8 @@
 
 #include "dll.h"
 
+#include "BotWarz\SpeedLevel.h"
+
 #include <vector>
 #include <memory>
 
@@ -15,7 +17,6 @@ namespace Geometry {
 namespace BotWarz {
 
     class Bot;
-    class SpeedLevel;
     class World;
 
     namespace Strategy {

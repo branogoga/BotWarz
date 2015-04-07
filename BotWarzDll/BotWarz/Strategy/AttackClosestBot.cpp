@@ -25,20 +25,15 @@ namespace BotWarz {
             const std::vector<SpeedLevel>& i_vSpeedLevels,
             const double i_dBotRadius,
             const std::shared_ptr<World> i_pWorld,
+            double dTimeStepInMilliseconds,
             std::shared_ptr<Logger> i_pLogger
             ) 
             : m_vSpeedLevels(i_vSpeedLevels)
             , m_dBotRadius(i_dBotRadius)
             , m_pWorld(i_pWorld)
+            , m_dTimeStepInMilliseconds(dTimeStepInMilliseconds)
             , m_pLogger(i_pLogger)
         {
-            m_enemyBotFinderPolicy = 
-                (std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
-                //(std::make_unique<Strategy::FindClosestBotPolicy>());
-
-            m_chasingStrategyPolicy =
-                std::make_unique<CurrentPositionChasingPolicy>();
-                //std::make_unique<FuturePositionChasingPolicy>();
         }
 
         AttackClosestBot::~AttackClosestBot()
@@ -50,11 +45,11 @@ namespace BotWarz {
             double i_dMySpeed,
             double i_dEnemySpeed,
             double i_dDistanceToTarget,
-            const std::vector<SpeedLevel>&   i_vSpeedLevels
+            const std::vector<SpeedLevel>&   i_vSpeedLevels,
+            double dTimeStepInMilliseconds
             )
         {
-            double dTimeStep = 250.0;//ms
-            double pixelsInOneStep = ((i_dMySpeed + i_dEnemySpeed) * dTimeStep / 1000.0);
+            double pixelsInOneStep = ((i_dMySpeed + i_dEnemySpeed) * dTimeStepInMilliseconds / 1000.0);
             double  stepToReachDirectionInCurrentSpeed =
                 //1.0;
                 i_dDistanceToTarget / pixelsInOneStep;
@@ -101,20 +96,27 @@ namespace BotWarz {
                             *pLogger << " Own bot #" << bot->getId() << " stays between attacking bot #" << myBot->getId() << " and enemy bot #" << closestEnemyBot->getId() << std::endl;
                         }
 
+                        double dAngleToEnemy = Geometry::angleInDegrees(myBot->getPosition(), bot->getPosition());
+                        if (fabs(dAngleToEnemy - myBot->getAngleInDegrees()) > 30.0)
+                        {
+                            return std::make_shared<Command::Accelerate>(myBot, vSpeedLevels);
+                        }
+
                         // Brake or steer.
                         // To Do: Find another target.
                         if (isMinimalSpeed(vSpeedLevels, myBot->getSpeed()))
                         {
-                            double dAngle = getMaxAngularSpeed(vSpeedLevels, myBot->getSpeed());
+
+                            double dMaxAngle = getMaxAngularSpeed(vSpeedLevels, myBot->getSpeed());
 
                             if (pLogger)
                             {
-                                *pLogger << " Steer " << dAngle << std::endl;
+                                *pLogger << " Steer " << dMaxAngle << std::endl;
                             }
 
                             return std::make_shared<Command::Steer>(
                                 myBot,
-                                dAngle,
+                                dMaxAngle,
                                 vSpeedLevels
                             );
                         }
@@ -137,6 +139,20 @@ namespace BotWarz {
             return nullptr; // No collision
         }
 
+        const std::shared_ptr<Bot>    AttackClosestBot::findEnemyBotToChase(
+            const std::shared_ptr<Bot> i_pMyBot,
+            const std::vector<std::shared_ptr<Bot>> i_vEnemyBots,
+            const std::shared_ptr<Player> i_pMyPlayer
+            ) const
+        {
+            auto enemyBotFinderPolicy =
+                //(std::make_unique<Strategy::FindMostReachableBotPolicy>(m_vSpeedLevels));
+                (std::make_unique<Strategy::FindClosestBotPolicy>());
+
+            //size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
+            size_t  closestEnemyBotIndex = getClosestEnemyBotIndex(i_pMyBot, i_vEnemyBots, i_pMyPlayer, m_dBotRadius);
+            return  i_vEnemyBots[closestEnemyBotIndex];
+        }
 
         std::vector<std::shared_ptr<Command::Interface>>    
         AttackClosestBot::getCommands(
@@ -147,16 +163,14 @@ namespace BotWarz {
             std::vector<std::shared_ptr<Command::Interface>>    vCommands;
 
             const std::vector<std::shared_ptr<Bot>>& vMyBots = pMyPlayer->getBots();
+            const std::vector<std::shared_ptr<Bot>>& vEnemyBots = pOtherPlayer->getBots();
+
             for each(auto myBot in vMyBots)
             {
                 //
                 // Find closest enemy Bot
                 //
-                const std::vector<std::shared_ptr<Bot>>& vEnemyBots = pOtherPlayer->getBots();
-
-                //size_t  closestEnemyBotIndex = m_enemyBotFinderPolicy->getBotIndex(myBot, vEnemyBots);
-                size_t  closestEnemyBotIndex = getClosestEnemyBotIndex(myBot,vEnemyBots,pMyPlayer,m_dBotRadius);
-                const std::shared_ptr<Bot> closestEnemyBot = vEnemyBots[closestEnemyBotIndex];
+                auto closestEnemyBot = findEnemyBotToChase(myBot, vEnemyBots, pMyPlayer);
 
                 std::shared_ptr<Command::Interface>    pCommand = chaseBot(
                     myBot,
@@ -174,43 +188,19 @@ namespace BotWarz {
             return vCommands;
         }
 
-        std::shared_ptr<Command::Interface> AttackClosestBot::chaseBot(
+        std::shared_ptr<Command::Interface> AttackClosestBot::stuckedNearTheWall(
             const std::shared_ptr<Bot> myBot,
             const std::shared_ptr<Bot> enemyBot,
-            const std::shared_ptr<Player> i_pMyPlayer,
             std::shared_ptr<Logger> pLogger
             ) const
         {
-            if (pLogger)
-            {
-                *pLogger << " Bot # " << myBot->getId() << " attacking enemy # " << enemyBot->getId() << std::endl;
-            }
-
-            // Calculate chasing target point
-            Geometry::Point targetPosition = m_chasingStrategyPolicy->getDestinationPoint(enemyBot);
-
-            // Calculate distance and angle
-            double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
-            double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
-
-            if (pLogger)
-            {
-                *pLogger << " Angle from current to enemy: " << dChangeInAngleInDegrees << std::endl;
-            }
-
-            //
-            // If stuck near wall, change the angle and accelerate
-            //
-            if (Strategy::isStuckedNearTheWall(
-                myBot, m_pWorld, m_vSpeedLevels, m_dBotRadius
-                ))
-            {
                 if (pLogger)
                 {
                     *pLogger << " Bot #" << myBot->getId() << " is stucked near the wall." << std::endl;
                 }
 
                 // Turned to the wall
+                double dChangeInAngleInDegrees = getChangeInAngleToFaceEnemyBot(myBot, enemyBot);
                 int sign = (dChangeInAngleInDegrees >= 0.0) ? +1 : -1;
 
                 double dAngle = sign * getMaxAngularSpeed(
@@ -228,11 +218,44 @@ namespace BotWarz {
                     dAngle,
                     m_vSpeedLevels
                     );
+        }
+
+        std::shared_ptr<Command::Interface> AttackClosestBot::chaseBot(
+            const std::shared_ptr<Bot> myBot,
+            const std::shared_ptr<Bot> enemyBot,
+            const std::shared_ptr<Player> i_pMyPlayer,
+            std::shared_ptr<Logger> pLogger
+            ) const
+        {
+            if (pLogger)
+            {
+                *pLogger << " Bot # " << myBot->getId() << " attacking enemy # " << enemyBot->getId() << std::endl;
             }
+
+            // Calculate chasing target point
+            Geometry::Point targetPosition = enemyBot->getPosition();
+
+            // Calculate distance and angle
+            double dChangeInAngleInDegrees = getChangeInAngleToFaceEnemyBot(myBot, enemyBot);
+
+            if (pLogger)
+            {
+                *pLogger << " Angle from current to enemy: " << dChangeInAngleInDegrees << std::endl;
+            }
+
+            ////
+            //// If stuck near wall, change the angle and accelerate
+            ////
+            //if (Strategy::isStuckedNearTheWall(
+            //    myBot, m_pWorld, m_vSpeedLevels, m_dBotRadius
+            //    ))
+            //{
+            //  return stuckedNearTheWall(myBot, enemyBot, i_pMyPlayer);
+            //}
 
             //
             // Avoid own static Bot collisions
-            //
+            //           
             std::shared_ptr<Command::Interface> pAvoidCollisionCommand =
                 avoidStaticBotCollisions(
                 myBot, enemyBot, i_pMyPlayer->getBots(), m_dBotRadius, m_vSpeedLevels, m_pLogger
@@ -286,7 +309,8 @@ namespace BotWarz {
                 myBot->getSpeed(),
                 enemyBot->getSpeed(),
                 dDistanceToTarget,
-                m_vSpeedLevels
+                m_vSpeedLevels,
+                m_dTimeStepInMilliseconds
                 );
 
             if (pLogger)
@@ -349,6 +373,7 @@ namespace BotWarz {
                 //
                 // Do not update enemy bot. We can not guess his strategy.
                 //
+                enemyBot->advance(dTimeStepInMilliseconds);
 
                 nNumberOfSteps++;
             }
@@ -397,20 +422,40 @@ namespace BotWarz {
             unsigned nReturnedIndex = 0;
             if (nNumberOfClosestBots > 1)
             {
+                // If Bot chased in last step is in set of closest ...
+                for (auto botId : vIndexesWithMinimalStepsToReachBot)
+                {
+                    if (botId == i_pMyBot->getChasedBotId())
+                    {
+                        return i_pMyBot->getChasedBotId();
+                    }
+                }
+
+                // Last chased Bot is not in set of close Bots, so choose random one ...
                 nReturnedIndex = ((nNumberOfClosestBots-1)*rand() / RAND_MAX);
                 assert(nReturnedIndex >= 0);
                 assert(nReturnedIndex < nNumberOfClosestBots);
             }
 
-            return (size_t)vIndexesWithMinimalStepsToReachBot[nReturnedIndex];
+            unsigned nResultBotId = (size_t)vIndexesWithMinimalStepsToReachBot[nReturnedIndex];
+            i_pMyBot->setChasedBotId(nResultBotId);
+            return nResultBotId;
+        }
+
+        double  AttackClosestBot::getChangeInAngleToFaceEnemyBot(
+            const std::shared_ptr<Bot> myBot,
+            const std::shared_ptr<Bot> enemyBot
+            ) const
+        {
+            Geometry::Point targetPosition = enemyBot->getPosition();
+            double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
+            double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
+            return dChangeInAngleInDegrees;
         }
 
         std::string AttackClosestBot::getName() const
         {
-            return "AttackClosestBot-" 
-                + m_enemyBotFinderPolicy->getName() + "-"
-                + m_chasingStrategyPolicy->getName()
-                ;
+            return "AttackClosestBot";
         }
 
     }//namespace Strategy

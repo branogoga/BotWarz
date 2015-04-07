@@ -7,8 +7,9 @@
 #include "Logger.h"
 #include "Player.h"
 #include "BotWarz\Message\Messages.h"
-#include "BotWarz\Strategy\NoCommands.h"
 #include "BotWarz\Strategy\AttackClosestBot.h"
+#include "BotWarz\Strategy\Strategy.h"
+#include "BotWarz\Strategy\NoCommands.h"
 
 #include "jsoncpp/include/json/json.h"
 
@@ -34,6 +35,18 @@ namespace BotWarz
             const char* jsonKeyGame = "game";
             Json::Value jsonGame = i_jsonGame[jsonKeyGame];
             m_pGame = gameFactory.createFromJson(jsonGame);
+
+            // Initialize who to chase with closest Bot
+            BotWarz::Strategy::FindClosestBotPolicy findClosestBotPolicy;
+            const std::vector<std::shared_ptr<Bot>>& vEnemyBots = m_pGame->getOtherPlayer()->getBots();
+            for (auto myBot : m_pGame->getMyPlayer()->getBots())
+            {
+                size_t nChasedBotIndex = findClosestBotPolicy.getBotIndex(
+                    myBot, vEnemyBots
+                    );
+                unsigned chasedBotId = vEnemyBots[nChasedBotIndex]->getId();
+                myBot->setChasedBotId(chasedBotId);
+            }
 
             m_pGameStrategy = createStrategy(m_pGame);
         }
@@ -163,7 +176,8 @@ namespace BotWarz
             return std::make_shared<BotWarz::Strategy::AttackClosestBot>(
                 i_pGame->getSpeedLevels(),
                 i_pGame->getBotRadius(),
-                i_pGame->getWorld(),
+                i_pGame->getWorld(),   
+                230.0,
                 m_pLogger
                 );
         }

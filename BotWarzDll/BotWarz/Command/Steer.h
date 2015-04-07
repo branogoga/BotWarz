@@ -31,10 +31,16 @@ namespace BotWarz {
 
             void    apply()
             {
-                double dAngleToApply = __min(
-                    this->getAngle(),
-                    getMaxAngularSpeed(m_vSpeedLevels, m_pBot->getSpeed())
-                    );
+                double dAngleToApply = this->getAngle();
+                double maxAngleForGivenSpeed = getMaxAngularSpeed(m_vSpeedLevels, m_pBot->getSpeed());
+                if (dAngleToApply > maxAngleForGivenSpeed)
+                {
+                    dAngleToApply = maxAngleForGivenSpeed;
+                }
+                if (dAngleToApply < -maxAngleForGivenSpeed)
+                {
+                    dAngleToApply = -maxAngleForGivenSpeed;
+                }
 
                 m_pBot->setAngleInDegrees(
                     Geometry::normalizeAngleInDegrees(
