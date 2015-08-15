@@ -61,14 +61,14 @@ namespace BotWarz {
         }
 
         std::shared_ptr<Command::Interface>
-        avoidStaticBotCollisions(
+        AttackClosestBot::avoidStaticBotCollisions(
             std::shared_ptr<Bot> myBot,
             std::shared_ptr<Bot> closestEnemyBot,
             const std::vector<std::shared_ptr<Bot>>& vMyBots,
-            double m_dBotRadius,
+            double dBotRadius,
             const std::vector<SpeedLevel>& vSpeedLevels,
             std::shared_ptr<Logger> pLogger
-        )
+        ) const
         {
             //
             // Avoid static Bot collisions
@@ -87,7 +87,14 @@ namespace BotWarz {
                         );
 
                     bool    bStaysInBetweenMeAndEnemy =
-                        (distanceToMeToEnemyLine < 1.2*m_dBotRadius);
+                        (distanceToMeToEnemyLine < 1.2*dBotRadius);
+
+                    //// What to do? Find another target? Go around to avoid obstacle?
+                    //Geometry::Line trajectoryLine(myBot->getPosition(), closestEnemyBot->getPosition());
+                    //Geometry::Point ptMidPoint = at(trajectoryLine,0.5);
+                    //Geometry::Vector lineNormal = normalize(clockwisePerpendicular(trajectoryLine.direction()));
+                    //Geometry::Point ptDestination = ptMidPoint + 2*dBotRadius*lineNormal;
+                    //return goToPoint(myBot, ptDestination, pLogger);
 
                     if (bStaysInBetweenMeAndEnemy)
                     {
@@ -243,16 +250,6 @@ namespace BotWarz {
                 *pLogger << " Angle from current to enemy: " << dChangeInAngleInDegrees << std::endl;
             }
 
-            ////
-            //// If stuck near wall, change the angle and accelerate
-            ////
-            //if (Strategy::isStuckedNearTheWall(
-            //    myBot, m_pWorld, m_vSpeedLevels, m_dBotRadius
-            //    ))
-            //{
-            //  return stuckedNearTheWall(myBot, enemyBot, i_pMyPlayer);
-            //}
-
             //
             // Avoid own static Bot collisions
             //           
@@ -340,6 +337,87 @@ namespace BotWarz {
             }
 
             return std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees,m_vSpeedLevels);
+        }
+
+        std::shared_ptr<Command::Interface> AttackClosestBot::goToPoint(
+            const std::shared_ptr<Bot> myBot,
+            const Geometry::Point& ptDestination,
+            std::shared_ptr<Logger> pLogger
+            ) const
+        {
+            double dChangeInAngleInDegrees = getChangeInAngleToReachThePoint(myBot, ptDestination);
+
+            // Achieve to Bots were aligned in attack position in given time
+            double dDistanceToTarget = Geometry::distance(ptDestination, myBot->getPosition());
+            const double dMaxAttackAngle = calculateMaxAttackAngleInDegrees(
+                m_dBotRadius,
+                dDistanceToTarget
+                );
+
+            if (pLogger)
+            {
+                *pLogger << " Max attack angle = " << dMaxAttackAngle << std::endl;
+            }
+
+            bool isAlignedInAttackPosition = fabs(dChangeInAngleInDegrees) < dMaxAttackAngle;
+            if (isAlignedInAttackPosition
+                && (!isMaximalSpeed(m_vSpeedLevels, myBot->getSpeed())))
+            {
+                //// If enemy Bot is turned in attack position and is close enought, do not send any command.
+                //// Rather save time, wait for collision and react sooner in next round, so possibly can won 
+                //// the next match.
+                //if (Strategy::isBotAlignedWithAttackZone(myBot, enemyBot))
+                //{
+                //    return nullptr;
+                //}
+
+                if (pLogger)
+                {
+                    *pLogger << " Aligned in attack position. Accelerate!" << std::endl;
+                }
+
+                return std::make_shared<Command::Accelerate>(
+                    myBot,
+                    m_vSpeedLevels
+                    );
+            }
+
+            bool bCanSteer = canSteerAngleAtGivenSpeed(
+                dChangeInAngleInDegrees,
+                myBot->getSpeed(),
+                0.0,
+                dDistanceToTarget,
+                m_vSpeedLevels,
+                m_dTimeStepInMilliseconds
+                );
+
+            if (pLogger)
+            {
+                *pLogger << " Distance to target = " << dDistanceToTarget << std::endl;
+            }
+
+            if (!bCanSteer
+                && !isMinimalSpeed(m_vSpeedLevels, myBot->getSpeed())
+                && (myBot->getSpeed() > getMinimalSpeed(m_vSpeedLevels)) // Stucked near the wall
+                )
+            {
+                if (pLogger)
+                {
+                    *pLogger << " Can`t steer at this speed. Brake." << std::endl;
+                }
+
+                return std::make_shared<Command::Brake>(
+                    myBot,
+                    m_vSpeedLevels
+                    );
+            }
+
+            if (pLogger)
+            {
+                *pLogger << " Steer " << dChangeInAngleInDegrees << "degrees." << std::endl;
+            }
+
+            return std::make_shared<Command::Steer>(myBot, dChangeInAngleInDegrees, m_vSpeedLevels);
         }
 
         unsigned AttackClosestBot::getNumberOfStepsToChaseEnemyBot(
@@ -447,8 +525,17 @@ namespace BotWarz {
             const std::shared_ptr<Bot> enemyBot
             ) const
         {
-            Geometry::Point targetPosition = enemyBot->getPosition();
-            double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), targetPosition);
+            return getChangeInAngleToReachThePoint(
+                myBot, enemyBot->getPosition()
+                );
+        }
+
+        double  AttackClosestBot::getChangeInAngleToReachThePoint(
+            const std::shared_ptr<Bot> myBot,
+            const Geometry::Point& ptDestination
+        ) const
+        {
+            double dTargetAngleInDegrees = Geometry::angleInDegrees(myBot->getPosition(), ptDestination);
             double dChangeInAngleInDegrees = Geometry::normalizeAngleInDegrees(dTargetAngleInDegrees - myBot->getAngleInDegrees());
             return dChangeInAngleInDegrees;
         }

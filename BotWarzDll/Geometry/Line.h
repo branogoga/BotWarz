@@ -71,6 +71,8 @@ namespace Geometry {
         const Line& line1, const Line& line2
         );
 
+    TESTABLE Geometry::Point at(const Line& line, double t);
+
 }//namespace Geometry
 
 std::ostream& operator << (std::ostream& out, const Geometry::Line& line);

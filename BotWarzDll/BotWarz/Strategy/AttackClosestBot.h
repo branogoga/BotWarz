@@ -12,6 +12,10 @@
 
 class Logger;
 
+namespace Geometry {
+    class Point;
+}
+
 namespace BotWarz {
 
     class Bot;
@@ -62,6 +66,11 @@ namespace BotWarz {
                 const std::shared_ptr<Bot> enemyBot
                 ) const;
 
+            double  getChangeInAngleToReachThePoint(
+                const std::shared_ptr<Bot> myBot,
+                const Geometry::Point& ptDestination
+                ) const;
+
             const std::shared_ptr<Bot>    findEnemyBotToChase(
                 const std::shared_ptr<Bot> i_pMyBot,
                 const std::vector<std::shared_ptr<Bot>> i_vEnemyBots,
@@ -74,10 +83,26 @@ namespace BotWarz {
                 std::shared_ptr<Logger> pLogger = nullptr
                 ) const;
 
-            std::shared_ptr<Command::Interface> chaseBot(
+            std::shared_ptr<Command::Interface>
+            avoidStaticBotCollisions(
+                std::shared_ptr<Bot> myBot,
+                std::shared_ptr<Bot> closestEnemyBot,
+                const std::vector<std::shared_ptr<Bot>>& vMyBots,
+                double m_dBotRadius,
+                const std::vector<SpeedLevel>& vSpeedLevels,
+                std::shared_ptr<Logger> pLogger
+                ) const;
+
+                std::shared_ptr<Command::Interface> chaseBot(
                 const std::shared_ptr<Bot> myBot,
                 const std::shared_ptr<Bot> enemyBot,
                 const std::shared_ptr<Player> i_pMyPlayer,
+                std::shared_ptr<Logger> pLogger = nullptr
+                ) const;
+
+            std::shared_ptr<Command::Interface> goToPoint(
+                const std::shared_ptr<Bot> myBot,
+                const Geometry::Point& ptDestination,
                 std::shared_ptr<Logger> pLogger = nullptr
                 ) const;
 

@@ -122,6 +122,33 @@ namespace BotWarz
                 return;
             }
 
+            /* + Evaluate Bot change */
+            *m_pLogger << "Updating player " << io_pPlayer->getNickName() << std::endl;
+
+            for each(auto newBot in vBots)
+            {
+                auto oldBot = io_pPlayer->getBot( newBot->getId());
+
+                if (oldBot->getSpeed() < newBot->getSpeed())
+                {
+                    *m_pLogger << " Bot " << newBot->getId() << " has accelerated from " << oldBot->getSpeed()
+                        << " to " << newBot->getSpeed() << std::endl;
+                }
+
+                if (oldBot->getSpeed() > newBot->getSpeed())
+                {
+                    *m_pLogger << " Bot " << newBot->getId() << " has slow down from " << oldBot->getSpeed()
+                        << " to " << newBot->getSpeed() << std::endl;
+                }
+
+                if (oldBot->getAngleInDegrees() != newBot->getAngleInDegrees())
+                {
+                    *m_pLogger << " Bot " << newBot->getId() << " has turned around from " << oldBot->getAngleInDegrees()
+                        << " to " << newBot->getAngleInDegrees() << std::endl;
+                }
+            }
+            /* - Evaluate Bot change */
+
             io_pPlayer->setBots(vBots);
         }
 

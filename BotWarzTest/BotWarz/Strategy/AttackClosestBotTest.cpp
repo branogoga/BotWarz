@@ -815,167 +815,167 @@ namespace BotWarzTest
                 );
         }
 
-        //TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetSlowMoving)
-        //{
-        //    auto strategy = createStrategy();
+        TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetSlowMoving)
+        {
+            auto strategy = createStrategy();
 
-        //    unsigned nBotId = 1;
+            unsigned nBotId = 1;
 
-        //    // My Player
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(100.0, 100.0),
-        //        0,
-        //        10.0
-        //        )
-        //        );
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                10.0
+                )
+                );
 
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(150.0, 100.0),
-        //        0,
-        //        10.0
-        //        )
-        //        );
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10.0
+                )
+                );
 
-        //    auto myPlayer = createPlayer("My", vMyBots);
+            auto myPlayer = createPlayer("My", vMyBots);
 
-        //    //
-        //    // Enemy player
-        //    //
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
-        //    vEnemyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(200.0, 100.0),
-        //        90,
-        //        10
-        //        )
-        //        );
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 100.0),
+                90,
+                10
+                )
+                );
 
-        //    auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
 
-        //    auto vCommands = strategy->getCommands(
-        //        myPlayer, enemyPlayer
-        //        );
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
 
-        //    Assert::AreEqual(
-        //        (unsigned)2,
-        //        (unsigned)vCommands.size()
-        //        );
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)vCommands.size()
+                );
 
-        //    auto pSteerCommand =
-        //        std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
-        //    Assert::IsTrue(pSteerCommand != nullptr);
-        //}
+            auto pSteerCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Steer>(vCommands[0]);
+            Assert::IsTrue(pSteerCommand != nullptr);
+        }
 
-        //TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetFastMoving)
-        //{
-        //    auto strategy = createStrategy();
+        TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetFastMoving)
+        {
+            auto strategy = createStrategy();
 
-        //    unsigned nBotId = 1;
+            unsigned nBotId = 1;
 
-        //    // My Player
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(100.0, 100.0),
-        //        0,
-        //        180.0
-        //        )
-        //        );
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                0,
+                180.0
+                )
+                );
 
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(150.0, 100.0),
-        //        0,
-        //        10.0
-        //        )
-        //        );
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10.0
+                )
+                );
 
-        //    auto myPlayer = createPlayer("My", vMyBots);
+            auto myPlayer = createPlayer("My", vMyBots);
 
-        //    //
-        //    // Enemy player
-        //    //
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
-        //    vEnemyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(200.0, 100.0),
-        //        90,
-        //        10
-        //        )
-        //        );
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 100.0),
+                90,
+                10
+                )
+                );
 
-        //    auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
 
-        //    auto vCommands = strategy->getCommands(
-        //        myPlayer, enemyPlayer
-        //        );
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
 
-        //    Assert::AreEqual(
-        //        (unsigned)2,
-        //        (unsigned)vCommands.size()
-        //        );
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)vCommands.size()
+                );
 
-        //    auto pBrakeCommand =
-        //        std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
-        //    Assert::IsTrue(pBrakeCommand != nullptr);
-        //}
+            auto pBrakeCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Brake>(vCommands[0]);
+            Assert::IsTrue(pBrakeCommand != nullptr);
+        }
 
-        //TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetTurnedAway)
-        //{
-        //    auto strategy = createStrategy();
+        TEST_METHOD(TestDoNotAttackToOwnBotIfStayingInBetweenHimAndTargetTurnedAway)
+        {
+            auto strategy = createStrategy();
 
-        //    unsigned nBotId = 1;
+            unsigned nBotId = 1;
 
-        //    // My Player
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(100.0, 100.0),
-        //        35.0,
-        //        10.0
-        //        )
-        //        );
+            // My Player
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vMyBots;
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(100.0, 100.0),
+                35.0,
+                10.0
+                )
+                );
 
-        //    vMyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(150.0, 100.0),
-        //        0,
-        //        10.0
-        //        )
-        //        );
+            vMyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(150.0, 100.0),
+                0,
+                10.0
+                )
+                );
 
-        //    auto myPlayer = createPlayer("My", vMyBots);
+            auto myPlayer = createPlayer("My", vMyBots);
 
-        //    //
-        //    // Enemy player
-        //    //
-        //    std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
-        //    vEnemyBots.push_back(
-        //        std::make_shared<BotWarz::Bot>(nBotId++,
-        //        Geometry::Point(200.0, 100.0),
-        //        90,
-        //        10
-        //        )
-        //        );
+            //
+            // Enemy player
+            //
+            std::vector<std::shared_ptr<BotWarz::Bot>>   vEnemyBots;
+            vEnemyBots.push_back(
+                std::make_shared<BotWarz::Bot>(nBotId++,
+                Geometry::Point(200.0, 100.0),
+                90,
+                10
+                )
+                );
 
-        //    auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
+            auto enemyPlayer = createPlayer("Enemy", vEnemyBots);
 
-        //    auto vCommands = strategy->getCommands(
-        //        myPlayer, enemyPlayer
-        //        );
+            auto vCommands = strategy->getCommands(
+                myPlayer, enemyPlayer
+                );
 
-        //    Assert::AreEqual(
-        //        (unsigned)2,
-        //        (unsigned)vCommands.size()
-        //        );
+            Assert::AreEqual(
+                (unsigned)2,
+                (unsigned)vCommands.size()
+                );
 
-        //    auto pAccelerateCommand =
-        //        std::dynamic_pointer_cast<BotWarz::Command::Accelerate>(vCommands[0]);
-        //    Assert::IsTrue(pAccelerateCommand != nullptr);
-        //}
+            auto pAccelerateCommand =
+                std::dynamic_pointer_cast<BotWarz::Command::Accelerate>(vCommands[0]);
+            Assert::IsTrue(pAccelerateCommand != nullptr);
+        }
 
         TEST_METHOD(TestDoNotSendCommandsIfTurnedToEnemyAndEnemyIsTurnedToMeAndIsCloseEnought)
         {

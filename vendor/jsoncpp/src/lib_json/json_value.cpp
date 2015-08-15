@@ -448,7 +448,7 @@ Value::Value( const Value &other )
       if ( other.value_.string_ )
       {
          value_.string_ = valueAllocator()->duplicateStringValue( other.value_.string_ );
-         allocated_ = true;
+         allocated_ = -1; // true;
       }
       else
          value_.string_ = 0;

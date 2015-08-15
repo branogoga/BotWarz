@@ -36,7 +36,7 @@ namespace Geometry
         // 0 --> p, q and r are colinear
         // 1 --> Clockwise
         // 2 --> Counterclockwise
-        typedef enum LineOrientation
+        enum LineOrientation
         {
             Colinear = 0,
             Clockwise = 1,
@@ -160,6 +160,12 @@ namespace Geometry
     {
         return sqrt(pointToLineDistanceSquare(point, line));
     }
+
+    Geometry::Point at(const Line& line, double t)
+    {
+        return line.from() + t*line.direction();
+    }
+
 }//namespace Geometry
 
 std::ostream& operator << (std::ostream& out, const Geometry::Line& line)
